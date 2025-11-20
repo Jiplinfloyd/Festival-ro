@@ -429,8 +429,7 @@ body.pdf-mode .note-badge{ font-size: 11px; }
 
 <div id="selection-jours">
   <p>Quels jours fais-tu au festival ?</p>
-  <label><input type="checkbox" value="Vendredi 26" checked> Vendredi 26</label><br>
-  <label><input type="checkbox" value="Samedi 27" checked> Samedi 27</label><br>
+  <label><input type="checkbox" value="SAMEDI 13" checked> SAMEDI 13</label><br>
   <button id="btnStart" type="button">Commencer</button>
 </div>
 
@@ -448,140 +447,31 @@ body.pdf-mode .note-badge{ font-size: 11px; }
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
 	let donneesFestival = {
-	  "Samedi 27": [
-			{ heure: "00h00", artistes: [
-			  { nom: "LB AKA LABAT", style: "Electro / House", scene: "Lunar Stage", fin: "1h00" },
-			  { nom: "25EMEHEURE", style: "Hard Techno", scene: "Organik Stage", fin: "1h30" },
-			]},
-			{ heure: "00h15", artistes: [
-			  { nom: "WILKINSON", style: "Drum & Bass", scene: "Bassquake Stage", fin: "1h15" },
-			]},
-			{ heure: "1h00", artistes: [
-			  { nom: "FUNK TRIBU b2b MISCHLUFT", style: "Techno", scene: "Lunar Stage", fin: "2h15" },
-			]},
-			{ heure: "1h15", artistes: [
-			  { nom: "ANDY C", style: "Drum & Bass", scene: "Bassquake Stage", fin: "2h15" },
-			]},
-			{ heure: "1h30", artistes: [
-			  { nom: "NØNAME", style: "Techno / Electro", scene: "Organik Stage", fin: "3h00" },
-			]},
-			{ heure: "2h15", artistes: [
-			  { nom: "VINI VICI", style: "Psytrance", scene: "Lunar Stage", fin: "3h15" },
-			  { nom: "KAYZO b2b MUST DIE!", style: "Bass / Hard Dance / Dubstep", scene: "Bassquake Stage", fin: "3h15" },
-			]},
-			{ heure: "3h00", artistes: [
-			  { nom: "BALAGAN", style: "Techno", scene: "Organik Stage", fin: "4h00" },
-			]},
-			{ heure: "3h15", artistes: [
-			  { nom: "ASTRIX", style: "Psytrance", scene: "Lunar Stage", fin: "4h15" },
-			  { nom: "KANINE b2b SOTA", style: "Drum & Bass", scene: "Bassquake Stage", fin: "4h15" },
-			]},
-			{ heure: "4h00", artistes: [
-			  { nom: "OBSTN", style: "Techno", scene: "Organik Stage", fin: "5h00" },
-			]},
-			{ heure: "4h15", artistes: [
-			  { nom: "ACE VENTURA", style: "Progressive Psytrance", scene: "Lunar Stage", fin: "5h15" },
-			  { nom: "INFEKT b2b SAMPLIFIRE", style: "Riddim / Dubstep", scene: "Bassquake Stage", fin: "5h15" },
-			]},
-			{ heure: "5h00", artistes: [
-			  { nom: "RHADAMANTHE", style: "Techno", scene: "Organik Stage", fin: "6h00" },
-			]},
-			{ heure: "5h15", artistes: [
-			  { nom: "MANDIDEXTROUS", style: "Jungle / 160-170", scene: "Bassquake Stage", fin: "6h15" },
-			  { nom: "EARGASM GOD", style: "Techno", scene: "Lunar Stage", fin: "6h15" },
-			]},
-			{ heure: "20h30", artistes: [
-			  { nom: "HIBI", style: "Trancy/Groovy", scene: "Organik Stage", fin: "22h00" },
-			]},
-			{ heure: "21h00", artistes: [
-			  { nom: "ASDEK", style: "Bass House", scene: "Bassquake Stage", fin: "21h45" },
-			]},
-			{ heure: "21h10", artistes: [
-			  { nom: "HILIGHT TRIBE", style: "Trance / Tribal (Live)", scene: "Lunar Stage", fin: "22h40" },
-			]},
-			{ heure: "21h45", artistes: [
-			  { nom: "MALAA × ALTER EGO", style: "House / Bass House", scene: "Bassquake Stage", fin: "23h15" },
-			]},
-			{ heure: "22h00", artistes: [
-			  { nom: "PEAKSOU", style: "Trance/Hypertechno", scene: "Organik Stage", fin: "23h00" },
-			]},
-			{ heure: "23h00", artistes: [
-			  { nom: "PERCEVAL", style: "Psytrance", scene: "Lunar Stage", fin: "23h55" },
-			  { nom: "MANIL", style: "Hard Techno/Groove", scene: "Organik Stage", fin: "00h00" },
-			]},
-			{ heure: "23h15", artistes: [
-			  { nom: "ZOMBOY", style: "Dubstep", scene: "Bassquake Stage", fin: "00h15" },
-			]},
-	  ],
-	  "Vendredi 26": [
-			{ heure: "00h15", artistes: [
-			  { nom: "999999999", style: "Acid Techno", scene: "Pulsar Stage", fin: "1h15" },
-			]},
-			{ heure: "00h30", artistes: [
-			  { nom: "SUB ZERO PROJECT", style: "Hardstyle", scene: "Warzone Stage", fin: "1h30" },
-			]},
-			{ heure: "1h00", artistes: [
-			  { nom: "SIBI", style: "Trance/Hardstyle/Hardcore oldschool", scene: "2much stage", fin: "2h15" },
-			]},
-			{ heure: "1h15", artistes: [
-			  { nom: "OGUZ", style: "Techno", scene: "Pulsar Stage", fin: "2h15" },
-			]},
-			{ heure: "1h30", artistes: [
-			  { nom: "ROOLER", style: "Raw Hardstyle", scene: "Warzone Stage", fin: "2h30" },
-			]},
-			{ heure: "2h15", artistes: [
-			  { nom: "DYEN b2b STAN CHRIST", style: "Neorave / Hard Techno", scene: "Pulsar Stage", fin: "3h30" },
-			  { nom: "SHANIXX", style: "Techno bitchy 2000", scene: "2much stage", fin: "3h30" },
-			]},
-			{ heure: "2h30", artistes: [
-			  { nom: "BILLX b2b VANDAL", style: "Hardtek / Raggatek", scene: "Warzone Stage", fin: "3h30" },
-			]},
-			{ heure: "3h30", artistes: [
-			  { nom: "REINIER ZONNEVELD b2b ANGERFIST", style: "Techno", scene: "Pulsar Stage", fin: "4h30" },
-			  { nom: "SEFA", style: "Frenchcore", scene: "Warzone Stage", fin: "4h25" },
-			  { nom: "DJ SCHNAKE", style: "Chipiecore/Trance/happy Hardcore/pop", scene: "2much stage", fin: "4h45" },
-			]},
-			{ heure: "4h25", artistes: [
-			  { nom: "MISS K8 b2b ANIME", style: "Hardcore", scene: "Warzone Stage", fin: "5h20" },
-			]},
-			{ heure: "4h30", artistes: [
-			  { nom: "VIEZE ASBAK", style: "Hard Techno", scene: "Pulsar Stage", fin: "5h15" },
-			]},
-			{ heure: "4h45", artistes: [
-			  { nom: "AVENIR", style: "Acid rave/Hard Techno/Electro/Punk rock", scene: "2much stage", fin: "6h00" },
-			]},
-			{ heure: "5h15", artistes: [
-			  { nom: "HADES", style: "Melodic Industrial Techno", scene: "Pulsar Stage", fin: "6h15" },
-			]},
-			{ heure: "5h20", artistes: [
-			  { nom: "MAJOR CONSPIRACY b2b PARTYRAISER", style: "Hardcore Uptempo", scene: "Warzone Stage", fin: "6h15" },
-			]},
-			{ heure: "21h00", artistes: [
-			  { nom: "SKONE & PROTOSKEED present SILENCE", style: "Tekno", scene: "Warzone Stage", fin: "22h00" },
-			  { nom: "NICE KEED", style: "Fast & Hard Techno", scene: "Pulsar Stage", fin: "22h15" },
-			]},
-			{ heure: "22h00", artistes: [
-			  { nom: "SPICE UP!", style: "Tekno", scene: "Warzone Stage", fin: "23h00" },
-			  { nom: "LUX", style: "Hard Trance", scene: "2much stage", fin: "23h30" },
-			]},
-			{ heure: "22h15", artistes: [
-			  { nom: "ZORZA", style: "Hyper Techno", scene: "Pulsar Stage", fin: "23h15" },
-			]},
-			{ heure: "23h00", artistes: [
-			  { nom: "MAD DOG", style: "Hardcore italien", scene: "Warzone Stage", fin: "23h45" },
-			]},
-			{ heure: "23h15", artistes: [
-			  { nom: "ACENDANT VIERGE", style: "Avant-garde Electro", scene: "Pulsar Stage", fin: "00h15" },
-			]},
-			{ heure: "23h30", artistes: [
-			  { nom: "SHOSHANA", style: "Hard Techno/Ghetto beats/Groove", scene: "2much stage", fin: "1h00" },
-			]},
-			{ heure: "23h45", artistes: [
-			  { nom: "VON BIKRAV", style: "Gangsta rap Gabber", scene: "Warzone Stage", fin: "00h30" },
-			]},
-	  ],
-	};
-		
+  "SAMEDI 13": [
+		{ heure: "0h00", artistes: [
+		  { nom: "L'ART CENE vs SIX OU SEPT", style: "Tribe / Acid / Tekno", scene: "MAIN", fin: "1h00" },
+		]},
+		{ heure: "18h00", artistes: [
+		  { nom: "CREEDS", style: "Hardbeats / Tekno", scene: "MAIN", fin: "19h00" },
+		]},
+		{ heure: "19h00", artistes: [
+		  { nom: "BILLX", style: "Hardtek / Rave / Frenchcore", scene: "MAIN", fin: "20h00" },
+		]},
+		{ heure: "20h00", artistes: [
+		  { nom: "OMAKS", style: "Hard techno / Acide", scene: "MAIN", fin: "21h00" },
+		]},
+		{ heure: "21h00", artistes: [
+		  { nom: "VORTEK'S", style: "Hardtek / Tribe / Frenchcore", scene: "MAIN", fin: "22h00" },
+		]},
+		{ heure: "22h00", artistes: [
+		  { nom: "THE DARK HORROR", style: "Uptempo Hardcore / Hardstyle", scene: "MAIN", fin: "23h00" },
+		]},
+		{ heure: "23h00", artistes: [
+		  { nom: "ACIDPACH", style: "Tekno mental", scene: "MAIN", fin: "0h00" },
+		]},
+  ],
+};
+
 		let joursChoisis = [];
 
 		// --- Mémoire des choix (clé spécifique à la page/festival) ---
