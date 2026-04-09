@@ -3,474 +3,776 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> Choisis ton Running Order - Dream Nation</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <title>Running Order – Motocultor 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
   <style>
 :root{
-  --bg: #0a0a0f;
-  --bg2:#0e0e16;
-  --text:#e9eef2;
-  --muted:#9aa3ab;
-  --card:#12121c;
-  --stroke:#222334;
-  --accent1:#ff00e6;   /* magenta */
-  --accent2:#00e5ff;   /* cyan */
-  --gold:#FFD700;      /* pour ton PDF / tableaux */
+  --bg:       #0c0b0b;
+  --bg2:      #111010;
+  --surface:  #181515;
+  --surface2: #1e1b1b;
+  --border:   #2e2828;
+  --text:     #d8d0c8;
+  --muted:    #7a726a;
+  --red:      #c8161e;
+  --red2:     #e8222b;
+  --red-glow: rgba(200,22,30,.28);
+  --gold:     #c8962a;
+  --white:    #f0ebe4;
 }
 
-*{box-sizing:border-box}
-html,body{margin:0}
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+
 body{
   background:
-    radial-gradient(1200px 600px at 10% -10%, #11131f 0%, transparent 60%),
-    radial-gradient(1000px 500px at 110% 10%, #0f1130 0%, transparent 60%),
+    radial-gradient(ellipse 900px 400px at 50% -60px, rgba(180,10,14,.12) 0%, transparent 70%),
     linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
-  color:var(--text);
-  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  text-align:center;
-  padding:28px 20px 40px;
+  color: var(--text);
+  font-family: 'Roboto Condensed', 'Arial Narrow', sans-serif;
+  min-height: 100vh;
 }
 
-/* Titres */
-h1{
-  margin:0 0 12px;
-  font-weight:800; letter-spacing:.5px;
-  text-transform:uppercase;
-  background: linear-gradient(90deg, var(--accent1), var(--accent2));
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-  text-shadow: 0 0 16px rgba(255,0,230,.15), 0 0 18px rgba(0,229,255,.12);
-}
-
-.day-group{margin:36px auto 28px; max-width:1100px; text-align:left;}
-.day-group h3{
-  margin:0 0 14px; padding:0 2px;
-  font-size:20px; font-weight:800; letter-spacing:.5px; text-transform:uppercase;
-  color:#fff;
-  position:relative;
-}
-.day-group h3::after{
-  content:"";
-  display:block; height:3px; margin-top:8px; border-radius:3px;
-  background:linear-gradient(90deg,var(--accent1),var(--accent2));
-  box-shadow: 0 0 18px rgba(255,0,230,.35), 0 0 22px rgba(0,229,255,.3);
-}
-
-/* Boutons */
-button{
-  font-size:15px; font-weight:700; letter-spacing:.3px; text-transform:uppercase;
-  padding:12px 18px; border:none; border-radius:12px; cursor:pointer;
-  color:#081018;
-  background:linear-gradient(90deg, var(--accent1), var(--accent2));
-  box-shadow: 0 8px 24px rgba(0,229,255,.18), inset 0 0 0 1px rgba(255,255,255,.06);
-  transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
-}
-button:hover{ transform: translateY(-1px); filter:brightness(1.05); }
-button:active{ transform: translateY(0); }
-
-/* Grille des créneaux */
-.slot{
-  display:flex; flex-direction:column; gap:12px;
-  max-width:1000px; margin:16px auto; text-align:left;
-  padding-left:12px; border-left:3px solid transparent;
-  border-image: linear-gradient(180deg, var(--accent1), var(--accent2)) 1;
-}
-.slot .heure{
-  font-weight:800; letter-spacing:.5px;
-  color:#fff; opacity:.95;
-}
-
-/* Conteneur des options : en flex, retour à la ligne */
-.slot .options{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-}
-
-/* Les cartes artistes s'adaptent, mais jamais trop petites */
-.option{
-  flex:1 1 280px; /* ← largeur mini 280px, s'étire sinon */
-}
-
-
-/* Cartes cliquables (glass) */
-.option{
-  position:relative;
-  border:1px solid var(--stroke);
-  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
-  border-radius:16px; padding:12px 14px; cursor:pointer;
-  transition: border-color .15s, box-shadow .15s, background .15s, transform .05s;
-}
-.option:hover{ border-color:#2d2f45; background:rgba(255,255,255,.03); }
-.option strong{ display:block; font-weight:800; color:#fff; }
-.option small { display:block; margin-top:4px; color:var(--muted); }
-
-/* cacher le radio */
-.option input[type="radio"]{
-  position:absolute; opacity:0; width:0; height:0; pointer-events:none;
-}
-
-/* état sélectionné via :has (modern) + fallback .selected */
-.option:has(input[type="radio"]:checked),
-.option.selected{
-  border-color:transparent;
-  background: rgba(10,20,30,.25);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.06) inset,
-    0 0 24px rgba(255,0,230,.20),
-    0 0 28px rgba(0,229,255,.18);
-}
-.option:has(input[type="radio"]:checked) strong,
-.option:has(input[type="radio"]:checked) small,
-.option.selected strong,
-.option.selected small{
-  color:#e8fbff;
-  text-shadow: 0 0 10px rgba(0,229,255,.25);
-}
-
-/* Résultats */
-#resultats h2{
-  text-transform:uppercase; letter-spacing:.5px;
-}
-
-table {
-  background: #0d1117;
-  border-radius: 14px;
-  overflow: hidden;
-  color: #fff;
-  border-collapse: collapse;
-  font-family: Montserrat, sans-serif;
-  font-size: 12px;
-}
-th {
-  background: linear-gradient(90deg, #ff00e6, #00e5ff);
-  color: #fff;
-  text-transform: uppercase;
-  font-size: 13px;
-  padding: 8px;
-}
-td {
-  border: 1px solid #333;
-  padding: 8px;
-}
-
-
-/* Mobile */
-@media (max-width:740px){
-  body{ padding:18px 14px 28px; }
-}
-
-.hidden {
-  display: none;
-}
-
-#liste-resultats table td,
-#liste-resultats table th {
-  box-shadow: 0 0 6px rgba(128,0,255,0.6);
-}
-
-.jour-titre {
-  margin: 50px 0 20px;
-  font-size: 1.8em;
+/* ── HEADER ───────────────────────────────────────── */
+.site-header{
+  background: linear-gradient(180deg, #0a0808 0%, #12100f 100%);
+  border-bottom: 2px solid var(--red);
+  padding: 14px 24px 10px;
   text-align: center;
-  color: #4b0082; /* violet festival */
-  font-weight: 700;
-  position: relative;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 4px 32px rgba(0,0,0,.7), 0 2px 12px var(--red-glow);
 }
-.jour-titre::after {
-  content: "";
-  display: block;
-  width: 80px;
-  height: 3px;
-  margin: 6px auto 0;
-  background: linear-gradient(90deg, #ff00e6, #00e5ff);
-  border-radius: 2px;
+.site-header .festival-name{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(26px,5vw,48px);
+  color: var(--white);
+  letter-spacing: 6px;
+  line-height: 1;
+  text-shadow: 0 0 20px var(--red-glow), 0 2px 4px rgba(0,0,0,.9);
+}
+.site-header .festival-name span{ color: var(--red); }
+.site-header .sub{
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: 3px;
 }
 
+/* ── MAIN WRAPPER ─────────────────────────────────── */
+main{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
 
-.option-none {
-  width: 120px;      /* largeur fixe */
-  height: 70px;      /* hauteur fixe */
+/* ── HERO TITLE ───────────────────────────────────── */
+h1.page-title{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 7vw, 72px);
+  color: var(--white);
+  letter-spacing: 8px;
+  text-align: center;
+  margin: 0 0 6px;
+  line-height: 1;
+  text-shadow: 0 0 40px var(--red-glow);
+}
+h1.page-title .accent{ color: var(--red); }
+
+.page-subtitle{
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  letter-spacing: 5px;
+  color: var(--muted);
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+
+/* ── SEPARATOR ────────────────────────────────────── */
+.sep{
+  display: flex; align-items: center; gap: 12px;
+  margin: 28px 0;
+}
+.sep::before, .sep::after{
+  content:"";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+/* ── DAY SELECTOR CARD ────────────────────────────── */
+#selection-jours{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--red);
+  border-radius: 4px;
+  padding: 28px 32px 32px;
+  max-width: 480px;
+  margin: 0 auto 20px;
+  text-align: center;
+  box-shadow: 0 8px 40px rgba(0,0,0,.5);
+}
+#selection-jours p{
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+
+.day-checkboxes{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.day-checkboxes label{
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--text);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 3px;
+  background: var(--surface2);
+  transition: border-color .15s, color .15s, background .15s;
+  user-select: none;
+}
+.day-checkboxes label:hover{ border-color: var(--red); color: var(--white); }
+.day-checkboxes input[type=checkbox]{ display:none; }
+.day-checkboxes label:has(input:checked){
+  border-color: var(--red);
+  background: rgba(200,22,30,.08);
+  color: var(--white);
+  box-shadow: 0 0 12px var(--red-glow);
+}
+.day-checkboxes label::before{
+  content:"";
+  width:14px; height:14px; border:1px solid var(--border);
+  border-radius:2px; background: var(--bg);
+  flex-shrink:0;
+  transition: background .15s, border-color .15s;
+}
+.day-checkboxes label:has(input:checked)::before{
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 0 6px var(--red-glow);
+}
+
+/* ── BUTTONS ──────────────────────────────────────── */
+button, .btn{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  background: var(--red);
+  color: var(--white);
+  transition: background .15s, box-shadow .15s, transform .08s;
+  box-shadow: 0 4px 20px var(--red-glow), inset 0 1px 0 rgba(255,255,255,.07);
+}
+button:hover{ background: var(--red2); box-shadow: 0 6px 28px rgba(200,22,30,.45); }
+button:active{ transform: translateY(1px); }
+
+button.secondary{
+  background: var(--surface2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  box-shadow: none;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+button.secondary:hover{ color: var(--text); border-color: var(--muted); }
+
+/* ── DAY GROUP ────────────────────────────────────── */
+.day-group{
+  margin: 48px auto 0;
+  max-width: 1060px;
+}
+.day-group h3{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 5vw, 52px);
+  letter-spacing: 8px;
+  color: var(--white);
+  margin: 0 0 4px;
+  text-shadow: 0 0 30px var(--red-glow);
+  text-transform: uppercase;
+  line-height: 1;
+}
+.day-group .day-bar{
+  height: 2px;
+  background: linear-gradient(90deg, var(--red), transparent);
+  margin-bottom: 20px;
+}
+
+/* ── TIME SLOT ────────────────────────────────────── */
+.slot{
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.option-none strong {
-  font-size: 14px;
-}
-
-.option-none small {
-  display: none; /* inutile pour "Aucun" */
-}
-
-.option.selected {
-  border-color: transparent;
-  background: rgba(10,20,30,.45);
-  box-shadow: 0 0 18px rgba(255,0,230,.35), 0 0 22px rgba(0,229,255,.35);
-}
-
-.option.selected strong {
-  color: #ff00e6; /* texte principal néon rose */
-}
-
-.option.selected small {
-  color: #00e5ff; /* sous-texte en cyan */
-}
-
-/* Couleurs du texte quand sélectionné */
-.option.selected strong { color:#ff00e6 !important; }  /* rose néon */
-.option.selected small  { color:#00e5ff !important; }  /* cyan */
-
-/* Si le navigateur supporte :has, colorer aussi via :has() */
-.option:has(input[type="radio"]:checked) strong { color:#ff00e6 !important; }
-.option:has(input[type="radio"]:checked) small  { color:#00e5ff !important; }
-
-/* Pulse néon doux sur l'option sélectionnée */
-@keyframes neonPulse{
-  0%,100%{
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,.06) inset,
-      0 0 18px rgba(255,0,230,.28),
-      0 0 22px rgba(0,229,255,.26);
-  }
-  50%{
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,.08) inset,
-      0 0 28px rgba(255,0,230,.45),
-      0 0 34px rgba(0,229,255,.42);
-  }
-}
-
-/* Appliquer le pulse uniquement à l'état sélectionné */
-.option.selected,
-.option:has(input[type="radio"]:checked){
-  animation: neonPulse 1.6s ease-in-out infinite;
-}
-
-/* Respecte la préférence "réduire les animations" */
-@media (prefers-reduced-motion: reduce){
-  .option.selected,
-  .option:has(input[type="radio"]:checked){
-    animation: none;
-  }
-}
-
-/* Affichage de l'intervalle */
-.option .time { opacity:.9; }
-
-/* Afficher clairement les conflits horaires */
-.option.conflict::after{
-  content:"Conflit horaire";
-  position:absolute; top:8px; right:12px;
-  font-size:11px; padding:2px 6px; border-radius:999px;
-  background: rgba(255,0,230,.18);
-  color:#ff8ae8;
-  border:1px solid rgba(255,0,230,.35);
-}
-.option.conflict input{ pointer-events:auto; }
-
-/* Partiel : autorisé, affiche "Restant XX min avant/après" */
-.option.partial{
-  opacity:.9;
+  gap: 10px;
+  margin: 14px 0;
+  padding-left: 60px;
   position: relative;
-  outline: 1px dashed rgba(255,165,0,.35);
 }
+.slot .heure{
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--red);
+  line-height: 1;
+  white-space: nowrap;
+  padding-top: 14px;
+}
+
+/* ── OPTIONS ROW ──────────────────────────────────── */
+.options{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ── ARTIST CARD ──────────────────────────────────── */
+.option{
+  flex: 1 1 260px;
+  position: relative;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 3px;
+  padding: 12px 14px 10px;
+  cursor: pointer;
+  transition: border-color .12s, background .12s, box-shadow .15s;
+}
+.option:hover{
+  border-color: #4a3e3e;
+  background: var(--surface2);
+}
+.option strong{
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: var(--white);
+  text-transform: uppercase;
+}
+.option small{
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: .5px;
+}
+.option .time{
+  font-size: 11px;
+  color: var(--red);
+  letter-spacing: 1px;
+}
+.option input[type="radio"]{
+  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+}
+
+/* ── SELECTED STATE ───────────────────────────────── */
+.option:has(input[type="radio"]:checked),
+.option.selected{
+  border-color: var(--red);
+  background: rgba(200,22,30,.06);
+  box-shadow: 0 0 0 1px rgba(200,22,30,.25) inset, 0 4px 20px var(--red-glow);
+}
+.option:has(input[type="radio"]:checked) strong,
+.option.selected strong{ color: var(--white) !important; }
+.option:has(input[type="radio"]:checked) small,
+.option.selected small{ color: #b09080 !important; }
+.option:has(input[type="radio"]:checked) .time,
+.option.selected .time{ color: var(--gold) !important; }
+
+/* ── NONE CARD ────────────────────────────────────── */
+.option-none{
+  flex: 0 0 100px;
+  text-align: center;
+  justify-content: center;
+  padding: 12px 10px;
+}
+.option-none strong{ font-size: 13px; }
+.option-none small{ display: none; }
+
+/* ── CONFLICT / PARTIAL ───────────────────────────── */
+.option.conflict{
+  opacity: .65;
+  filter: grayscale(.2);
+}
+.option.conflict::after{
+  content: "Restant " attr(data-remmin) " min " attr(data-dir) " (conflit)";
+  position: absolute; top: 7px; right: 10px;
+  font-size: 10px; padding: 2px 7px; border-radius: 2px;
+  background: rgba(200,22,30,.18);
+  color: #e88;
+  border: 1px solid rgba(200,22,30,.35);
+  font-family: 'Roboto Condensed', sans-serif;
+}
+.option.partial{ opacity: .9; outline: 1px dashed rgba(200,150,42,.35); }
 .option.partial::after{
   content: "Restant " attr(data-remmin) " min " attr(data-dir);
-  position:absolute; top:8px; right:12px;
-  font-size:11px; padding:2px 6px; border-radius:999px;
-  background: rgba(255,165,0,.18);
-  color:#ffb84d;
-  border:1px solid rgba(255,165,0,.35);
+  position: absolute; top: 7px; right: 10px;
+  font-size: 10px; padding: 2px 7px; border-radius: 2px;
+  background: rgba(200,150,42,.15);
+  color: var(--gold);
+  border: 1px solid rgba(200,150,42,.35);
+  font-family: 'Roboto Condensed', sans-serif;
 }
-
-/* Conflit dur : moins de WATCHABLE_MIN */
-.option.conflict{
-  opacity:.6;
-  filter: grayscale(.15);
-  position: relative;
-}
-.option.conflict::after{
-  content:"Restant " attr(data-remmin) " min " attr(data-dir) " (conflit)";
-  position:absolute; top:8px; right:12px;
-  font-size:11px; padding:2px 6px; border-radius:999px;
-  background: rgba(255,0,230,.18);
-  color:#ff8ae8;
-  border:1px solid rgba(255,0,230,.35);
-}
-/* Petite ligne d’info sur le chevauchement */
 .option .ov-note{
-  margin-top: 6px;
+  margin-top: 5px;
   font-size: 11px;
-  line-height: 1.25;
-  color: #cfcfe6;
-  opacity: .9;
+  color: #8a8070;
+  line-height: 1.3;
 }
-.option.partial .ov-note{ color:#ffb84d; }     /* partiel = orange */
-.option.conflict .ov-note{ color:#ff8ae8; }    /* conflit dur = rose */
+.option.partial .ov-note{ color: var(--gold); }
+.option.conflict .ov-note{ color: #e88; }
 
-/* Badge de note dans le tableau */
+/* ── PULSE ANIM ───────────────────────────────────── */
+@keyframes metalPulse{
+  0%,100%{ box-shadow: 0 0 0 1px rgba(200,22,30,.25) inset, 0 4px 20px rgba(200,22,30,.22); }
+  50%{ box-shadow: 0 0 0 1px rgba(200,22,30,.5) inset, 0 4px 32px rgba(200,22,30,.42); }
+}
+.option.selected,
+.option:has(input[type="radio"]:checked){ animation: metalPulse 2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce){
+  .option.selected, .option:has(input[type="radio"]:checked){ animation: none; }
+}
+
+/* ── VALIDATE BUTTON ROW ──────────────────────────── */
+.validate-row{
+  text-align: center;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── RESULTS ──────────────────────────────────────── */
+#resultats h2.results-title{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px,5vw,52px);
+  color: var(--white);
+  letter-spacing: 8px;
+  text-align: center;
+  margin: 0 0 6px;
+  text-shadow: 0 0 30px var(--red-glow);
+}
+#resultats .results-sub{
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.jour-titre{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px,4vw,44px);
+  letter-spacing: 6px;
+  text-align: left;
+  color: var(--white);
+  margin: 44px 0 12px;
+  text-transform: uppercase;
+  position: relative;
+  padding-left: 14px;
+  border-left: 3px solid var(--red);
+  text-shadow: 0 0 20px var(--red-glow);
+}
+
+/* ── RESULTS TABLE ────────────────────────────────── */
+table{
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: 3px;
+  overflow: hidden;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 13px;
+  border: 1px solid var(--border);
+}
+th{
+  background: linear-gradient(90deg, rgba(200,22,30,.85) 0%, rgba(150,16,22,.85) 100%);
+  color: var(--white);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 10px;
+  border-bottom: 1px solid rgba(200,22,30,.4);
+  text-align: left;
+}
+td{
+  border: 1px solid #231f1f;
+  padding: 9px 10px;
+  vertical-align: middle;
+}
+tr:hover td{ background: var(--surface2); }
+
+/* ── NOTE BADGES ──────────────────────────────────── */
 .note-badge{
-  display:inline-block;
-  font-size:11px;
-  padding:2px 8px;
-  border-radius:999px;
-  border:1px solid;
-  white-space:nowrap;
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid;
+  white-space: nowrap;
 }
-.note-badge.partial{
-  color:#ffb84d; background:rgba(255,165,0,.12); border-color:rgba(255,165,0,.35);
-}
-.note-badge.conflict{
-  color:#ff8ae8; background:rgba(255,0,230,.12); border-color:rgba(255,0,230,.35);
-}
+.note-badge.partial{ color: var(--gold); background: rgba(200,150,42,.1); border-color: rgba(200,150,42,.3); }
+.note-badge.conflict{ color: #e88; background: rgba(200,22,30,.1); border-color: rgba(200,22,30,.3); }
 
-/* Mini timeline */
+/* ── TIMELINE ─────────────────────────────────────── */
 .tl-cell{
-  width:100%; height:22px; position:relative;   /* ← plus de largeur fixe */
-  background:#f5f7fa; border:1px solid #e2e8f0; border-radius:6px;
-  overflow:hidden;
+  width: 100%; height: 22px; position: relative;
+  background: #1a1616; border: 1px solid #2e2828; border-radius: 2px;
+  overflow: hidden;
 }
 .tl-range{
-  position:absolute; top:0; bottom:0; border-radius:6px;
-  background: linear-gradient(90deg, #ff00e6, #00e5ff);
-  opacity:.85;
+  position: absolute; top: 0; bottom: 0; border-radius: 2px;
+  background: linear-gradient(90deg, var(--red), #8b0000);
+  opacity: .75;
 }
 .tl-label{
-  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-  font-size:11px; color:#0b1320; font-weight:700; mix-blend:normal;
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--white); font-weight: 700;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 
-/* === MODE PDF : couleurs claires + largeur sûre === */
-body.pdf-mode { background:#fff; color:#111; }
-body.pdf-mode #resultats { color:#111; }
-
-/* tableau lisible à l'impression */
-body.pdf-mode table { background:#fff; border-color:#7b61ff; }
-body.pdf-mode th { background:#eef0ff; color:#111; }
-body.pdf-mode td { background:#fff; }
-
-/* badges de note : fond clair + texte foncé */
-body.pdf-mode .note-badge.partial{
-  color:#8a5a00; background:#fff; border-color:#f0c27a;
-}
-body.pdf-mode .note-badge.conflict{
-  color:#7a2a6e; background:#fff; border-color:#d29ad0;
+/* ── ACTION BUTTONS ROW ───────────────────────────── */
+.results-actions{
+  display: flex; flex-wrap: wrap; gap: 12px;
+  justify-content: center;
+  margin-top: 40px; padding-top: 24px;
+  border-top: 1px solid var(--border);
 }
 
-/* timeline : fond blanc, bord violet doux, barre gris neutre */
-body.pdf-mode .tl-cell{ background:#fff; border-color:#7b61ff; }
-body.pdf-mode .tl-range{
-  background:#999; opacity:.35;  /* pas de dégradé flashy sur le PDF */
-}
-body.pdf-mode #liste-resultats { max-width: 100% !important; }
-body.pdf-mode table { width: 100% !important; table-layout: fixed; }
-
-/* ——— TABLEAU : largeur fixe & compacité en PDF ——— */
-body.pdf-mode table { table-layout: fixed; width: 100% !important; }
-body.pdf-mode th, body.pdf-mode td { padding: 6px 8px !important; font-size: 12px !important; }
-
-/* Heures : pas de retour à la ligne */
-.nowrap { white-space: nowrap; }
-
-/* Timeline : taille raisonnable en PDF */
-body.pdf-mode .tl-cell { height: 18px; }
-body.pdf-mode .tl-label { font-size: 10px; }
-
-/* Empêche la timeline de déborder en PDF */
-body.pdf-mode .tl-cell{
-  width: 100% !important;     /* prend tout l'espace de la colonne */
-  max-width: 100% !important;
-}
-
-/* sécurité : pas de dépassement horizontal */
-body.pdf-mode .tl-range{ right: 0; }      /* au cas où */
-body.pdf-mode .tl-cell, 
-body.pdf-mode .tl-label{ overflow: hidden; }
-
-
-/* ===== PDF MODE – largeur sûre et texte qui s'enroule ===== */
-body.pdf-mode * { box-sizing: border-box !important; }
-
-body.pdf-mode #liste-resultats,
-body.pdf-mode .jour-section { width: 100% !important; max-width: 100% !important; }
-
-body.pdf-mode table {
-  table-layout: fixed;
-  width: 100% !important;
-  border-collapse: collapse;
-}
-
-body.pdf-mode th, body.pdf-mode td {
-  padding: 6px 8px !important;
-  font-size: 12px !important;
-}
-
-/* Colonne NOTE : autoriser l’enroulement + empêcher l'overflow */
-td.col-note { overflow: hidden; }
-.note-badge{
-  display: block;            /* occupe toute la largeur de la cellule */
-  white-space: normal;       /* autorise retour à la ligne */
-  word-break: break-word;    /* casse proprement si besoin */
-  line-height: 1.2;
-  max-width: 100%;
-}
+/* ── PDF MODE ─────────────────────────────────────── */
+body.pdf-mode{ background: #fff; color: #111; }
+body.pdf-mode #resultats{ color: #111; }
+body.pdf-mode table{ background: #fff; border-color: #c8161e; }
+body.pdf-mode th{ background: #c8161e; color: #fff; }
+body.pdf-mode td{ background: #fff; border-color: #ddd; }
+body.pdf-mode .note-badge.partial{ color: #8a5a00; background: #fff; border-color: #d4a84b; }
+body.pdf-mode .note-badge.conflict{ color: #8a0010; background: #fff; border-color: #c8161e; }
+body.pdf-mode .tl-cell{ background: #f5f0f0; border-color: #c8161e; }
+body.pdf-mode .tl-range{ background: #c8161e; opacity: .4; }
+body.pdf-mode #liste-resultats{ max-width: 100% !important; }
+body.pdf-mode table{ width: 100% !important; table-layout: fixed; }
+body.pdf-mode th, body.pdf-mode td{ padding: 6px 8px !important; font-size: 12px !important; }
+body.pdf-mode .tl-cell{ height: 18px; }
+body.pdf-mode .tl-label{ font-size: 10px; }
+body.pdf-mode .tl-cell{ width: 100% !important; max-width: 100% !important; }
+body.pdf-mode .tl-range{ right: 0; }
+body.pdf-mode .tl-cell, body.pdf-mode .tl-label{ overflow: hidden; }
+body.pdf-mode *{ box-sizing: border-box !important; }
+body.pdf-mode #liste-resultats, body.pdf-mode .jour-section{ width: 100% !important; max-width: 100% !important; }
+td.col-note{ overflow: hidden; }
+.note-badge{ display: block; white-space: normal; word-break: break-word; line-height: 1.2; max-width: 100%; }
 body.pdf-mode .note-badge{ font-size: 11px; }
+.nowrap{ white-space: nowrap; }
 
+/* ── HIDDEN ───────────────────────────────────────── */
+.hidden{ display: none; }
 
+/* ── SCROLLBAR ────────────────────────────────────── */
+::-webkit-scrollbar{ width: 6px; }
+::-webkit-scrollbar-track{ background: var(--bg); }
+::-webkit-scrollbar-thumb{ background: #3a2f2f; border-radius: 3px; }
 
+/* ── MOBILE ───────────────────────────────────────── */
+@media (max-width: 680px){
+  .slot{ padding-left: 0; }
+  .slot .heure{ position: static; padding-top: 0; margin-bottom: 8px; font-size: 18px; }
+  main{ padding: 20px 14px 40px; }
+}
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-  <h1>Fais ton choix pour chaque créneau</h1>
 
-<div id="selection-jours">
-  <p>Quels jours fais-tu au festival ?</p>
-  <label><input type="checkbox" value="SAMEDI 13" checked> SAMEDI 13</label><br>
-  <button id="btnStart" type="button">Commencer</button>
-</div>
+<header class="site-header">
+  <div class="festival-name"><span>MOTOCULTOR</span> FESTIVAL</div>
+  <div class="sub">13 &mdash; 14 &mdash; 15 &mdash; 16 Août 2026 &nbsp;|&nbsp; Carhaix · Bretagne</div>
+</header>
 
+<main>
+  <h1 class="page-title">Running <span class="accent">Order</span></h1>
+  <p class="page-subtitle">Choisis tes concerts • 4 scènes • 4 jours</p>
+
+  <div id="selection-jours">
+    <p>Quels jours fais-tu au festival ?</p>
+    <div class="day-checkboxes">
+      <label><input type="checkbox" value="JEUDI" checked> Jeudi</label>
+      <label><input type="checkbox" value="VENDREDI" checked> Vendredi</label>
+      <label><input type="checkbox" value="SAMEDI" checked> Samedi</label>
+      <label><input type="checkbox" value="DIMANCHE" checked> Dimanche</label>
+    </div>
+    <button id="btnStart" type="button">Commencer</button>
+  </div>
 
   <div id="choix" class="hidden"></div>
+
   <div id="resultats" class="hidden">
-  <h2>Ton Running Order</h2>
-  <ul id="liste-resultats"></ul>
-  <button onclick="genererPDF()">📅 Télécharger en PDF</button>
-  <button type="button" id="btnResetMem">Effacer mes choix mémorisés</button>
-</div>
+    <h2 class="results-title">Ton Running <span style="color:var(--red)">Order</span></h2>
+    <p class="results-sub">Récapitulatif de tes choix</p>
+    <ul id="liste-resultats" style="list-style:none;margin:0;padding:0;"></ul>
+    <div class="results-actions">
+      <button onclick="genererPDF()">📄 Télécharger en PDF</button>
+      <button type="button" class="secondary" id="btnResetMem">Effacer mes choix mémorisés</button>
+    </div>
+  </div>
 
-
+</main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-	let donneesFestival = {
-	  "SAMEDI 13": [
-			{ heure: "00h00", artistes: [
-			  { nom: "OMAKS", style: "Hard techno / Acide", scene: "MAINSTAGE", fin: "01h00" },
-			]},
-			{ heure: "01h00", artistes: [
-			  { nom: "VORTEK'S", style: "Hardtek / Tribe / Frenchcore", scene: "MAINSTAGE", fin: "02h00" },
-			]},
-			{ heure: "02h00", artistes: [
-			  { nom: "BILLX", style: "Hardtek / Rave / Frenchcore", scene: "MAINSTAGE", fin: "03h00" },
-			]},
-			{ heure: "03h00", artistes: [
-			  { nom: "THE DARK HORROR", style: "Uptempo Hardcore / Hardstyle", scene: "MAINSTAGE", fin: "04h00" },
-			]},
-			{ heure: "19h30", artistes: [
-			  { nom: "L'ART CENE vs SIX OU SEPT", style: "Tribe / Acid / Tekno", scene: "MAINSTAGE", fin: "21h30" },
-			]},
-			{ heure: "21h30", artistes: [
-			  { nom: "ACIDPACH", style: "Tekno mental", scene: "MAINSTAGE", fin: "23h00" },
-			]},
-			{ heure: "23h00", artistes: [
-			  { nom: "CREEDS", style: "Hardbeats / Tekno", scene: "MAINSTAGE", fin: "00h00" },
-			]},
-	  ],
-	};
+let donneesFestival = {
+  "DIMANCHE": [
+		{ heure: "00h10", artistes: [
+		  { nom: "ARCH ENEMY", style: "", scene: "Dave Mustage", fin: "01h10" },
+		  { nom: "WARNING", style: "", scene: "Bruce Dickinscene", fin: "01h10" },
+		]},
+		{ heure: "11h45", artistes: [
+		  { nom: "HOLY MOTHER", style: "", scene: "Dave Mustage", fin: "12h25" },
+		  { nom: "LES HOMMES CRABES", style: "Post Grunge", scene: "Bruce Dickinscene", fin: "12h25" },
+		]},
+		{ heure: "12h25", artistes: [
+		  { nom: "EYES", style: "Hardcore", scene: "Massey Ferguscène", fin: "13h05" },
+		  { nom: "INTERNAL BLEEDING", style: "Slam Death Metal", scene: "Supositor Stage", fin: "13h05" },
+		]},
+		{ heure: "13h05", artistes: [
+		  { nom: "JOOLS", style: "", scene: "Dave Mustage", fin: "13h45" },
+		  { nom: "MODDER", style: "", scene: "Bruce Dickinscene", fin: "13h45" },
+		]},
+		{ heure: "13h45", artistes: [
+		  { nom: "HERETOIR", style: "", scene: "Massey Ferguscène", fin: "14h25" },
+		  { nom: "HEAVY/HITTER", style: "", scene: "Supositor Stage", fin: "14h25" },
+		]},
+		{ heure: "14h30", artistes: [
+		  { nom: "KILLERS", style: "", scene: "Dave Mustage", fin: "15h10" },
+		  { nom: "RED SUN ATACAMA", style: "Rock", scene: "Bruce Dickinscene", fin: "15h10" },
+		]},
+		{ heure: "15h15", artistes: [
+		  { nom: "PAIN MAGAZINE", style: "", scene: "Massey Ferguscène", fin: "16h00" },
+		  { nom: "CRYPTOPSY", style: "", scene: "Supositor Stage", fin: "16h00" },
+		]},
+		{ heure: "16h05", artistes: [
+		  { nom: "FIT FOR AN AUTOPSY", style: "", scene: "Dave Mustage", fin: "16h50" },
+		  { nom: "WORMSAND", style: "", scene: "Bruce Dickinscene", fin: "16h50" },
+		]},
+		{ heure: "16h55", artistes: [
+		  { nom: "JOHN CXNNOR", style: "Industrial Doom Rave", scene: "Massey Ferguscène", fin: "17h45" },
+		  { nom: "SIGNS OF THE SWARM", style: "", scene: "Supositor Stage", fin: "17h45" },
+		]},
+		{ heure: "17h50", artistes: [
+		  { nom: "KIM DRACULA", style: "", scene: "Dave Mustage", fin: "18h40" },
+		  { nom: "CASTLE RAT", style: "", scene: "Bruce Dickinscene", fin: "18h40" },
+		]},
+		{ heure: "18h45", artistes: [
+		  { nom: "VOIVOD", style: "", scene: "Massey Ferguscène", fin: "19h35" },
+		  { nom: "WITCH CLUB SATAN", style: "Black Metal", scene: "Supositor Stage", fin: "19h35" },
+		]},
+		{ heure: "19h40", artistes: [
+		  { nom: "AIRBOURNE", style: "", scene: "Dave Mustage", fin: "20h40" },
+		  { nom: "MONKEYS ON MARS", style: "", scene: "Bruce Dickinscene", fin: "20h40" },
+		]},
+		{ heure: "20h45", artistes: [
+		  { nom: "DEAFHEAVEN", style: "", scene: "Massey Ferguscène", fin: "21h35" },
+		  { nom: "VADER", style: "", scene: "Supositor Stage", fin: "21h35" },
+		]},
+		{ heure: "21h40", artistes: [
+		  { nom: "JUDAS PRIEST", style: "", scene: "Dave Mustage", fin: "23h10" },
+		  { nom: "COLTAINE", style: "", scene: "Bruce Dickinscene", fin: "23h10" },
+		]},
+		{ heure: "23h15", artistes: [
+		  { nom: "SHAARGHOT", style: "", scene: "Massey Ferguscène", fin: "00h05" },
+		  { nom: "SACRED REICH", style: "", scene: "Supositor Stage", fin: "00h05" },
+		]},
+  ],
+  "JEUDI": [
+		{ heure: "00h30", artistes: [
+		  { nom: "ODMPH!", style: "Metal Industriel", scene: "Massey Ferguscène", fin: "01h30" },
+		  { nom: "MUNICIPAL WASTE", style: "Thrash Metal", scene: "Supositor Stage", fin: "01h30" },
+		]},
+		{ heure: "15h15", artistes: [
+		  { nom: "UNEARTH", style: "Metal Hardcore", scene: "Dave Mustage", fin: "16h00" },
+		  { nom: "FAUXX", style: "Metal Industriel", scene: "Bruce Dickinscene", fin: "16h00" },
+		]},
+		{ heure: "16h05", artistes: [
+		  { nom: "BATTLESNAKE", style: "Epic Metal", scene: "Massey Ferguscène", fin: "16h45" },
+		  { nom: "200 STAB WOUNDS", style: "Death Metal", scene: "Supositor Stage", fin: "16h45" },
+		]},
+		{ heure: "16h50", artistes: [
+		  { nom: "KITTIE", style: "Nu Metal", scene: "Dave Mustage", fin: "17h50" },
+		  { nom: "BRIEG GUERVENO", style: "Folk Rock", scene: "Bruce Dickinscene", fin: "17h50" },
+		]},
+		{ heure: "17h55", artistes: [
+		  { nom: "PILORI", style: "Blackened Hardore", scene: "Massey Ferguscène", fin: "18h45" },
+		  { nom: "SANGUISUGABOGG", style: "Death Metal", scene: "Supositor Stage", fin: "18h45" },
+		]},
+		{ heure: "18h50", artistes: [
+		  { nom: "TBC", style: "", scene: "Dave Mustage", fin: "19h50" },
+		  { nom: "CELKILT X BAGAD DE QUIMPER", style: "Rock Celtique", scene: "Bruce Dickinscene", fin: "19h50" },
+		]},
+		{ heure: "19h50", artistes: [
+		  { nom: "GAEREA", style: "Post Black Metal", scene: "Massey Ferguscène", fin: "20h50" },
+		  { nom: "BLOODBATH", style: "Death Metal", scene: "Supositor Stage", fin: "20h50" },
+		]},
+		{ heure: "20h55", artistes: [
+		  { nom: "GODSMACK", style: "Metal Alternatif", scene: "Dave Mustage", fin: "22h05" },
+		  { nom: "DENEZ PRIGENT", style: "Chant Traditionnel Breton", scene: "Bruce Dickinscene", fin: "22h05" },
+		]},
+		{ heure: "22h10", artistes: [
+		  { nom: "AMENRA", style: "Post Metal", scene: "Massey Ferguscène", fin: "23h10" },
+		  { nom: "DEATH ANGEL", style: "Thrash Metal", scene: "Supositor Stage", fin: "23h10" },
+		]},
+		{ heure: "23h15", artistes: [
+		  { nom: "PRIMUS", style: "Rock", scene: "Dave Mustage", fin: "00h25" },
+		  { nom: "KOMODRAG AND THE MOUNODOOR", style: "Rock / Heavy / Psych", scene: "Bruce Dickinscene", fin: "00h25" },
+		]},
+  ],
+  "SAMEDI": [
+		{ heure: "00h25", artistes: [
+		  { nom: "SIERRA VEINS", style: "", scene: "Massey Ferguscène", fin: "01h25" },
+		  { nom: "OMNIUM GATHERUM", style: "", scene: "Supositor Stage", fin: "01h25" },
+		]},
+		{ heure: "01h30", artistes: [
+		  { nom: "PERTURBATOR", style: "", scene: "Dave Mustage", fin: "02h30" },
+		  { nom: "NANOWAR OF STEEL", style: "Heavy Metal", scene: "Bruce Dickinscene", fin: "02h30" },
+		]},
+		{ heure: "12h45", artistes: [
+		  { nom: "NECROWRETCH", style: "", scene: "Dave Mustage", fin: "13h25" },
+		  { nom: "SHADY FAT KATZ", style: "Pop Punk", scene: "Bruce Dickinscene", fin: "13h25" },
+		]},
+		{ heure: "13h30", artistes: [
+		  { nom: "BASAALT", style: "Alternative Metal", scene: "Massey Ferguscène", fin: "14h10" },
+		  { nom: "AORLHAC", style: "", scene: "Supositor Stage", fin: "14h10" },
+		]},
+		{ heure: "14h15", artistes: [
+		  { nom: "ASHEN", style: "", scene: "Dave Mustage", fin: "14h55" },
+		  { nom: "MONDE DE MERDE", style: "Punk", scene: "Bruce Dickinscene", fin: "14h55" },
+		]},
+		{ heure: "15h00", artistes: [
+		  { nom: "BRUIT ≤", style: "", scene: "Massey Ferguscène", fin: "15h40" },
+		  { nom: "RECTAL SMEGMA", style: "", scene: "Supositor Stage", fin: "15h40" },
+		]},
+		{ heure: "15h45", artistes: [
+		  { nom: "ILL NIÑO", style: "", scene: "Dave Mustage", fin: "16h30" },
+		  { nom: "JETSEX", style: "", scene: "Bruce Dickinscene", fin: "16h30" },
+		]},
+		{ heure: "16h35", artistes: [
+		  { nom: "HOLLOW JAN", style: "", scene: "Massey Ferguscène", fin: "17h20" },
+		  { nom: "CANCER", style: "", scene: "Supositor Stage", fin: "17h20" },
+		]},
+		{ heure: "17h25", artistes: [
+		  { nom: "ORDEN OGAN", style: "", scene: "Dave Mustage", fin: "18h10" },
+		  { nom: "THE CASUALTIES", style: "", scene: "Bruce Dickinscene", fin: "18h10" },
+		]},
+		{ heure: "18h15", artistes: [
+		  { nom: "MÚR", style: "", scene: "Massey Ferguscène", fin: "19h05" },
+		  { nom: "GRAVE", style: "", scene: "Supositor Stage", fin: "19h05" },
+		]},
+		{ heure: "19h10", artistes: [
+		  { nom: "LEPROUS", style: "", scene: "Dave Mustage", fin: "20h00" },
+		  { nom: "LES 3 FROMAGES", style: "Pop / Rock Humoristique", scene: "Bruce Dickinscene", fin: "20h00" },
+		]},
+		{ heure: "20h05", artistes: [
+		  { nom: "SLIFT", style: "", scene: "Massey Ferguscène", fin: "20h55" },
+		  { nom: "ANAAL NATHRAKH", style: "", scene: "Supositor Stage", fin: "20h55" },
+		]},
+		{ heure: "21h00", artistes: [
+		  { nom: "EISBRECHER", style: "", scene: "Dave Mustage", fin: "22h00" },
+		  { nom: "FROG LEAP", style: "", scene: "Bruce Dickinscene", fin: "22h00" },
+		]},
+		{ heure: "22h15", artistes: [
+		  { nom: "SVINKELS FRIENDS & FAMILY", style: "", scene: "Massey Ferguscène", fin: "23h05" },
+		  { nom: "NEVERMORE", style: "", scene: "Supositor Stage", fin: "23h05" },
+		]},
+		{ heure: "23h10", artistes: [
+		  { nom: "WITHIN TEMPTATION", style: "", scene: "Dave Mustage", fin: "00h20" },
+		  { nom: "STEVE'N'SEAGULLS", style: "", scene: "Bruce Dickinscene", fin: "00h20" },
+		]},
+  ],
+  "VENDREDI": [
+		{ heure: "00h15", artistes: [
+		  { nom: "ALCEST", style: "", scene: "Massey Ferguscène", fin: "01h15" },
+		  { nom: "DARKENED NOCTURN SLAUGHTERCULT", style: "", scene: "Supositor Stage", fin: "01h15" },
+		]},
+		{ heure: "01h20", artistes: [
+		  { nom: "FILTH", style: "", scene: "Dave Mustage", fin: "02h20" },
+		  { nom: "EIWHAR", style: "Viking War Trance", scene: "Bruce Dickinscene", fin: "02h20" },
+		]},
+		{ heure: "12h45", artistes: [
+		  { nom: "ICE SEALED EYES", style: "", scene: "Dave Mustage", fin: "13h25" },
+		  { nom: "NAWATHER", style: "", scene: "Bruce Dickinscene", fin: "13h25" },
+		]},
+		{ heure: "13h30", artistes: [
+		  { nom: "GRAVITY", style: "", scene: "Massey Ferguscène", fin: "14h10" },
+		  { nom: "GUINEAPIG", style: "", scene: "Supositor Stage", fin: "14h10" },
+		]},
+		{ heure: "14h15", artistes: [
+		  { nom: "CAGE FIGHT", style: "Hardcore / Heavy", scene: "Dave Mustage", fin: "14h55" },
+		  { nom: "VANSIND", style: "", scene: "Bruce Dickinscene", fin: "14h55" },
+		]},
+		{ heure: "15h00", artistes: [
+		  { nom: "URNE", style: "", scene: "Massey Ferguscène", fin: "15h40" },
+		  { nom: "SKAPHOS", style: "", scene: "Supositor Stage", fin: "15h40" },
+		]},
+		{ heure: "15h45", artistes: [
+		  { nom: "HELLRIPPER", style: "", scene: "Dave Mustage", fin: "16h30" },
+		  { nom: "STILLE VOLK", style: "", scene: "Bruce Dickinscene", fin: "16h30" },
+		]},
+		{ heure: "16h35", artistes: [
+		  { nom: "IOTUNN", style: "", scene: "Massey Ferguscène", fin: "17h20" },
+		  { nom: "BÖLZER", style: "", scene: "Supositor Stage", fin: "17h20" },
+		]},
+		{ heure: "17h25", artistes: [
+		  { nom: "CHELSEA GRIN", style: "", scene: "Dave Mustage", fin: "18h10" },
+		  { nom: "HRAFNGRIMR", style: "", scene: "Bruce Dickinscene", fin: "18h10" },
+		]},
+		{ heure: "18h15", artistes: [
+		  { nom: "TEXTURES", style: "Metal Procressif", scene: "Massey Ferguscène", fin: "19h05" },
+		  { nom: "CORONER", style: "", scene: "Supositor Stage", fin: "19h05" },
+		]},
+		{ heure: "19h10", artistes: [
+		  { nom: "LORD OF THE LOST", style: "", scene: "Dave Mustage", fin: "20h00" },
+		  { nom: "MIRACLE OF SOUND", style: "", scene: "Bruce Dickinscene", fin: "20h00" },
+		]},
+		{ heure: "20h05", artistes: [
+		  { nom: "SOEN", style: "", scene: "Massey Ferguscène", fin: "20h55" },
+		  { nom: "UNLEASHED", style: "", scene: "Supositor Stage", fin: "20h55" },
+		]},
+		{ heure: "21h00", artistes: [
+		  { nom: "MASS HYSTERIA", style: "Metal", scene: "Dave Mustage", fin: "22h00" },
+		  { nom: "VISIONS OF ATLANTIS", style: "", scene: "Bruce Dickinscene", fin: "22h00" },
+		]},
+		{ heure: "22h05", artistes: [
+		  { nom: "PARADISE LOST", style: "", scene: "Massey Ferguscène", fin: "23h05" },
+		  { nom: "EMPEROR", style: "", scene: "Supositor Stage", fin: "23h05" },
+		]},
+		{ heure: "23h00", artistes: [
+		  { nom: "SLAUGHTER TO PREVAIL", style: "Deathcore", scene: "Dave Mustage", fin: "00h10" },
+		  { nom: "MASTER BOOT RECORD", style: "Heavy Metal / Electro Synthé", scene: "Bruce Dickinscene", fin: "00h10" },
+		]},
+  ],
+};		
 		let joursChoisis = [];
 
 		// --- Mémoire des choix (clé spécifique à la page/festival) ---
@@ -787,7 +1089,7 @@ body.pdf-mode .note-badge{ font-size: 11px; }
 		  validateBtn.type = 'button';
 		  validateBtn.textContent = 'Valider mes choix';
 		  validateBtn.addEventListener('click', afficherResultats);
-		  choixDiv.appendChild(validateBtn);
+		  const vRow = document.createElement('div'); vRow.className='validate-row'; vRow.appendChild(validateBtn); choixDiv.appendChild(vRow);
 
 		  // 4) Premier calcul de conflits
 		  loadSelections();          // <-- recharge les choix depuis la mémoire
@@ -992,7 +1294,7 @@ body.pdf-mode .note-badge{ font-size: 11px; }
 		  // Bouton retour (unique)
 		  const backBtn = document.createElement('button');
 		  backBtn.type = 'button';
-		  backBtn.className = 'back-btn';
+		  backBtn.className = 'secondary';
 		  backBtn.textContent = 'Revenir aux choix';
 		  backBtn.addEventListener('click', revenirAuxChoix);
 		  resultatsDiv.appendChild(backBtn);
