@@ -267,6 +267,108 @@ tr:hover td{background:var(--surface2);}
 .live-end{text-align:center;padding:48px 20px;font-family:'Oswald',sans-serif;letter-spacing:2px;color:var(--muted);}
 .live-end strong{display:block;font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--text);letter-spacing:4px;margin-bottom:10px;}
 
+/* ── ÉCRAN PARTAGE ─────────────────────────────────── */
+.share-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,7vw,68px);letter-spacing:8px;color:var(--white);line-height:1;margin:0 0 4px;text-shadow:0 0 40px var(--red-glow);}
+.share-sub{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
+
+.share-section{background:var(--surface);border:1px solid var(--border);border-radius:4px;margin-bottom:20px;overflow:hidden;}
+.share-section-title{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);padding:12px 18px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.share-section-body{padding:18px;}
+
+.share-code-area{
+  width:100%;min-height:72px;background:#0d0b0b;border:1px solid var(--border);
+  border-radius:3px;color:var(--gold);font-family:'Roboto Condensed',monospace;
+  font-size:12px;padding:10px 12px;resize:none;letter-spacing:.5px;
+  word-break:break-all;line-height:1.4;
+}
+.share-code-area:focus{outline:1px solid var(--gold);border-color:var(--gold);}
+.share-code-actions{display:flex;gap:10px;margin-top:10px;}
+
+.share-import-row{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;}
+.share-input{
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);font-family:'Roboto Condensed',sans-serif;font-size:14px;
+  padding:10px 14px;border-radius:3px;flex-shrink:0;
+}
+.share-input:focus{outline:1px solid var(--red);border-color:var(--red);}
+.share-input-code{flex:1;min-width:200px;font-size:12px;letter-spacing:.3px;}
+#amiNom{width:160px;}
+.share-error{color:#e88;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;margin-top:8px;}
+
+/* Panneau repliable export/import */
+.share-tools-wrap{margin-top:32px;border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+.share-tools-toggle{
+  width:100%;display:flex;justify-content:space-between;align-items:center;
+  background:var(--surface2);border:none;border-radius:0;box-shadow:none;
+  padding:14px 18px;cursor:pointer;
+  font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);transition:color .15s,background .15s;
+}
+.share-tools-toggle:hover{background:var(--surface);color:var(--text);}
+.share-tools-arrow{font-size:10px;transition:transform .2s;font-family:sans-serif;letter-spacing:0;}
+.share-tools-arrow.open{transform:rotate(180deg);}
+.share-tools-body{border-top:1px solid var(--border);}
+.share-tools-body .share-section{margin-bottom:0;border:none;border-bottom:1px solid var(--border);border-radius:0;}
+.share-tools-body .share-section:last-child{border-bottom:none;}
+
+/* Liste des amis importés */
+.share-amis-list{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:24px;}
+.ami-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:3px;border:1px solid;
+  font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;
+  cursor:pointer;transition:opacity .15s;
+}
+.ami-chip.active{opacity:1;}
+.ami-chip:not(.active){opacity:.5;}
+.ami-chip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.ami-chip-del{
+  margin-left:6px;font-size:16px;color:inherit;opacity:.5;cursor:pointer;
+  line-height:1;padding:0 2px;background:none;border:none;box-shadow:none;
+  font-family:sans-serif;font-size:14px;letter-spacing:0;
+  min-width:0;padding:0;
+}
+.ami-chip-del:hover{opacity:1;background:none;box-shadow:none;}
+
+/* Onglets comparison */
+.share-compare-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.share-tab{
+  font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  padding:5px 14px;border:1px solid var(--border);border-radius:2px;cursor:pointer;
+  background:transparent;color:var(--muted);transition:all .15s;box-shadow:none;
+}
+.share-tab.active{color:var(--white);border-color:currentColor;}
+
+/* Tableau de comparaison */
+.compare-day-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(24px,4vw,40px);letter-spacing:6px;color:var(--white);margin:32px 0 12px;padding-left:14px;border-left:3px solid var(--red);}
+.compare-table{width:100%;border-collapse:collapse;font-family:'Roboto Condensed',sans-serif;font-size:13px;margin-bottom:8px;}
+.compare-table th{
+  background:linear-gradient(90deg,rgba(200,22,30,.85),rgba(150,16,22,.85));
+  color:var(--white);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;
+  text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid rgba(200,22,30,.4);
+}
+.compare-table td{border:1px solid #231f1f;padding:8px 10px;vertical-align:middle;}
+.compare-table tr:hover td{background:var(--surface2);}
+.compare-table .time-col{white-space:nowrap;color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;}
+
+/* Cellules de comparaison */
+.cmp-cell{border-radius:2px;padding:4px 8px;display:inline-block;width:100%;box-sizing:border-box;}
+.cmp-match{background:rgba(42,158,90,.15);border:1px solid rgba(42,158,90,.35);color:#5dd492;}
+.cmp-diff{background:rgba(200,22,30,.08);border:1px solid rgba(200,22,30,.25);color:var(--text);}
+.cmp-none{color:var(--muted);font-style:italic;}
+.cmp-icon{margin-right:5px;font-size:10px;}
+
+/* Légende corrélation */
+.compare-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;}
+.compare-legend-item{display:flex;align-items:center;gap:6px;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted);}
+.compare-legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+/* Stats corrélation */
+.compare-stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:28px;}
+.compare-stat{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:12px 18px;text-align:center;flex:1;min-width:100px;}
+.compare-stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px;line-height:1;}
+.compare-stat-lbl{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+
 /* PDF */
 body.pdf-mode{background:#fff;color:#111;}
 body.pdf-mode table{background:#fff;border-color:#c8161e;}
@@ -302,8 +404,9 @@ body.pdf-mode .day-sticky{display:none!important;}
   <div class="festival-name"><span>MOTOCULTOR</span> FESTIVAL</div>
   <div class="festival-sub">13 — 14 — 15 — 16 Août 2026 &nbsp;|&nbsp; Carhaix · Bretagne</div>
   <div class="header-nav hidden" id="headerNav">
-    <button class="nav-btn active" onclick="goTo('ro')">Ma Running Order</button>
-    <button class="nav-btn" onclick="goTo('live')">🔴 Mode Live</button>
+    <button class="nav-btn active" onclick="goTo('ro')">Running Order</button>
+    <button class="nav-btn" onclick="goTo('share')">Partage</button>
+    <button class="nav-btn" onclick="goTo('live')">🔴 Live</button>
   </div>
 </header>
 
@@ -343,7 +446,7 @@ body.pdf-mode .day-sticky{display:none!important;}
 
   <!-- ÉCRAN 3 : RUNNING ORDER -->
   <div class="screen" id="screen-ro">
-    <div class="ro-title">Ma Running <span>Order</span></div>
+    <div class="ro-title">Running <span>Order</span></div>
     <div class="ro-sub">Motocultor 2026 · Ta programmation personnelle</div>
     <div class="ro-actions">
       <button onclick="genererPDF()">Télécharger en PDF</button>
@@ -360,6 +463,59 @@ body.pdf-mode .day-sticky{display:none!important;}
       <div class="live-date" id="liveDate">—</div>
     </div>
     <div id="live-content"></div>
+  </div>
+
+  <!-- ÉCRAN 5 : PARTAGE -->
+  <div class="screen" id="screen-share">
+    <div class="share-title">Partage</div>
+    <div class="share-sub">Échange ta running order</div>
+
+    <!-- CHIPS AMIS -->
+    <div id="amisList" class="share-amis-list"></div>
+
+    <!-- VUE COMPARAISON -->
+    <div id="shareCompare" class="hidden">
+      <div class="share-compare-header">
+        <div class="share-compare-tabs" id="shareTabs"></div>
+      </div>
+      <div id="shareCompareContent"></div>
+    </div>
+
+    <!-- PANNEAU REPLIABLE : GÉNÉRER / AJOUTER -->
+    <div id="shareTools" class="share-tools-wrap">
+      <button class="share-tools-toggle" id="btnShareToolsToggle">
+        <span>Ajouter un ami · Partager mon code</span>
+        <span id="shareToolsArrow" class="share-tools-arrow">▼</span>
+      </button>
+      <div id="shareToolsBody" class="share-tools-body hidden">
+
+        <div class="share-section">
+          <div class="share-section-title">Mon code à partager</div>
+          <div class="share-section-body">
+            <div class="share-code-wrap">
+              <textarea id="myExportCode" class="share-code-area" readonly placeholder="Clique sur Générer…"></textarea>
+              <div class="share-code-actions">
+                <button id="btnGenererCode">Générer mon code</button>
+                <button class="btn-ghost" id="btnCopierCode">Copier</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="share-section">
+          <div class="share-section-title">Ajouter un ami</div>
+          <div class="share-section-body">
+            <div class="share-import-row">
+              <input type="text" id="amiNom" class="share-input" placeholder="Prénom de ton ami" maxlength="20">
+              <input type="text" id="amiCode" class="share-input share-input-code" placeholder="Colle son code ici…">
+              <button id="btnImporterAmi">Ajouter</button>
+            </div>
+            <div id="importError" class="share-error hidden"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 
 </main>
@@ -462,6 +618,9 @@ const WATCHABLE    = 30;
 const ROLLOVER     = 8*60;
 const JOURS_ORDRE  = ['JEUDI','VENDREDI','SAMEDI','DIMANCHE'];
 const JOURS_DATES  = {JEUDI:'2026-08-13',VENDREDI:'2026-08-14',SAMEDI:'2026-08-15',DIMANCHE:'2026-08-16'};
+// Préfixe du code de partage — à changer pour chaque festival
+// Format : 3 lettres + 2 chiffres d'année, ex: "MTL26" pour Motocultor 2026
+const FESTIVAL_CODE = 'MTL26';
 
 /* ════ UTILITAIRES ════════════════════════════════════ */
 function toMin(s){
@@ -480,22 +639,15 @@ function sk(n){ n=n.toLowerCase(); if(n.includes('dave')) return 'dave'; if(n.in
 function sl(n){ return {dave:'Dave Mustage',bruce:'Bruce Dickinscene',massey:'Massey Ferguscène',supo:'Supositor Stage'}[sk(n)]||n; }
 function norm(s){ return (s!=null&&s<ROLLOVER)?s+24*60:s; }
 
-/* ════ STORAGE — fallback mémoire si localStorage bloqué (Edge file://) ═══ */
-const _memStore = {};
-const _ls = {
-  getItem(k){ try{ return localStorage.getItem(k); }catch{ return _memStore[k]??null; } },
-  setItem(k,v){ try{ localStorage.setItem(k,v); }catch{} _memStore[k]=v; },
-  removeItem(k){ try{ localStorage.removeItem(k); }catch{} delete _memStore[k]; }
-};
-
+/* ════ STORAGE ════════════════════════════════════════ */
 function saveSelections(){
   const d={};
   document.querySelectorAll('#choix-content input[type=radio]:checked').forEach(r=>{ d[r.name]=r.value; });
-  try{ _ls.setItem(STORAGE_KEY,JSON.stringify(d)); }catch{}
+  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(d)); }catch{}
 }
-function loadRaw(){ try{ return JSON.parse(_ls.getItem(STORAGE_KEY)||'{}'); }catch{ return {}; } }
-function saveJours(j){ try{ _ls.setItem(JOURS_KEY,JSON.stringify(j)); }catch{} }
-function loadJours(){ try{ return JSON.parse(_ls.getItem(JOURS_KEY)||'null'); }catch{ return null; } }
+function loadRaw(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); }catch{ return {}; } }
+function saveJours(j){ try{ localStorage.setItem(JOURS_KEY,JSON.stringify(j)); }catch{} }
+function loadJours(){ try{ return JSON.parse(localStorage.getItem(JOURS_KEY)||'null'); }catch{ return null; } }
 function hasAnySelection(){ return Object.values(loadRaw()).some(v=>v&&v!=='Aucun'); }
 
 /* ════ NAVIGATION ════════════════════════════════════ */
@@ -508,14 +660,15 @@ function goTo(screen){
   document.getElementById('screen-'+screen).classList.add('active');
   currentScreen=screen;
   const nav=document.getElementById('headerNav');
-  // Afficher la nav uniquement sur ro et live
   nav.classList.toggle('hidden', screen==='jours'||screen==='choix');
   document.querySelectorAll('.nav-btn').forEach((b,i)=>{
-    b.classList.toggle('active',(i===0&&screen==='ro')||(i===1&&screen==='live'));
+    b.classList.toggle('active',
+      (i===0&&screen==='ro')||(i===1&&screen==='share')||(i===2&&screen==='live'));
   });
-  if(screen==='ro')    renderRO();
-  if(screen==='live')  renderLive();
-  if(screen==='choix') buildChoixUI();
+  if(screen==='ro')     renderRO();
+  if(screen==='live')   renderLive();
+  if(screen==='choix')  buildChoixUI();
+  if(screen==='share')  renderShare();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -535,7 +688,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   document.getElementById('btnResetMem').addEventListener('click',()=>{
     if(!confirm('Effacer tous tes choix et recommencer depuis le début ?')) return;
-    _ls.removeItem(STORAGE_KEY); _ls.removeItem(JOURS_KEY);
+    localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(JOURS_KEY);
     joursChoisis=[]; goTo('jours');
   });
 
@@ -551,6 +704,20 @@ window.addEventListener('DOMContentLoaded',()=>{
     updateConflictsForDay(jour);
     updateProgress(jour);
   });
+
+  document.getElementById('btnGenererCode')?.addEventListener('click', genererMonCode);
+  document.getElementById('btnCopierCode')?.addEventListener('click', copierMonCode);
+  document.getElementById('btnImporterAmi')?.addEventListener('click', importerAmi);
+  document.getElementById('btnShareToolsToggle')?.addEventListener('click', ()=>{
+    const body  = document.getElementById('shareToolsBody');
+    const arrow = document.getElementById('shareToolsArrow');
+    const isOpen = !body.classList.contains('hidden');
+    body.classList.toggle('hidden', isOpen);
+    arrow.classList.toggle('open', !isOpen);
+  });
+
+  // Charger les amis sauvegardés au démarrage
+  loadAmis();
 
   // Décision écran initial
   const savedJours=loadJours();
@@ -816,7 +983,7 @@ async function genererPDF(){
       if(jourH) jourH.style.visibility='hidden';
       const prev={w:s.style.width,mw:s.style.maxWidth};
       s.style.width=sW+'px';s.style.maxWidth=sW+'px';
-      const cv=await html2canvas(s,{backgroundColor:'#ffffff',scale:2,useCORS:true,allowTaint:true,logging:false,windowWidth:sW});
+      const cv=await html2canvas(s,{backgroundColor:'#ffffff',scale:2,useCORS:true,windowWidth:sW});
       s.style.width=prev.w;s.style.maxWidth=prev.mw;
       if(jourH) jourH.style.visibility='';
       const sc=cv.width/s.clientWidth,sp=(cW-10)/cv.width,mp=Math.floor(cH/sp);
@@ -844,7 +1011,325 @@ async function genererPDF(){
   finally{document.body.classList.remove('pdf-mode');}
 }
 
-/* ════ MODE LIVE ══════════════════════════════════════ */
+/* ════ MODE PARTAGE ═══════════════════════════════════
+
+   Données : amis[] = [{nom, couleur, choix: {JOUR_heure: nomArtiste}}]
+   Persistance : _ls clé AMIS_KEY
+   Couleurs : palette de 8 teintes distinctes
+════════════════════════════════════════════════════ */
+const AMIS_KEY = 'RO:motocultor2026:amis';
+const AMI_COLORS = [
+  {bg:'rgba(26,111,190,.15)',border:'#1a6fbe',text:'#6aaff0'},
+  {bg:'rgba(155,63,200,.15)',border:'#9b3fc8',text:'#c97ef0'},
+  {bg:'rgba(200,122,26,.15)',border:'#c87a1a',text:'#e8a955'},
+  {bg:'rgba(42,158,90,.15)', border:'#2a9e5a',text:'#5dd492'},
+  {bg:'rgba(190,50,50,.15)', border:'#be3232',text:'#f08080'},
+  {bg:'rgba(50,150,190,.15)',border:'#3296be',text:'#70c8f0'},
+  {bg:'rgba(200,180,26,.15)',border:'#c8b41a',text:'#f0dc60'},
+  {bg:'rgba(190,90,140,.15)',border:'#be5a8c',text:'#f090c0'},
+];
+
+let amis = [];
+let shareTabActif = null;
+
+// Storage amis avec fallback mémoire (localStorage peut être bloqué)
+const _amisMem = { data: null };
+function loadAmis(){
+  try{
+    const raw = localStorage.getItem(AMIS_KEY);
+    amis = raw ? JSON.parse(raw) : [];
+  } catch {
+    amis = _amisMem.data ? [..._amisMem.data] : [];
+  }
+}
+function saveAmis(){
+  _amisMem.data = [...amis]; // Toujours sauvegarder en mémoire
+  try{ localStorage.setItem(AMIS_KEY, JSON.stringify(amis)); } catch {}
+}
+
+/* ════ CODES DE PARTAGE COMPACTS ══════════════════════
+   Format : MTL26-JJJJ-VVVV-SSSS-DDDD
+   Chaque caractère = un créneau (ordre chronologique)
+   0 = Aucun, 1 = artiste 1, 2 = artiste 2 … 9 = artiste 9
+   Les créneaux sont triés exactement comme buildChoixUI
+   (passe-minuit normalisé), donc le code est stable même
+   si on réordonne les données dans le source.
+════════════════════════════════════════════════════ */
+
+function getSlotsOrdonnes(jour){
+  return [...(donneesFestival[jour]||[])].sort(
+    (a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0)
+  );
+}
+
+function encoderChoix(){
+  /* Retourne la partie après le préfixe, ex: "1020-2011-0102-1100" */
+  const raw = loadRaw();
+  return JOURS_ORDRE.map(jour=>{
+    return getSlotsOrdonnes(jour).map(slot=>{
+      const gn  = `${jour}_${slot.heure}`;
+      const val = raw[gn];
+      if(!val || val==='Aucun') return '0';
+      const idx = slot.artistes.findIndex(a=>a.nom===val);
+      return idx>=0 ? String(idx+1) : '0';
+    }).join('');
+  }).join('-');
+}
+
+function decoderChoix(partie){
+  /* Reconstruit un objet {JOUR_heure: nomArtiste} depuis la partie après le préfixe */
+  const segments = partie.split('-');
+  if(segments.length !== JOURS_ORDRE.length) throw new Error('nombre de jours incorrect');
+  const choix = {};
+  const jours  = [];
+  JOURS_ORDRE.forEach((jour, ji)=>{
+    const seg   = segments[ji];
+    const slots = getSlotsOrdonnes(jour);
+    if(seg.length !== slots.length) throw new Error(`longueur incorrecte pour ${jour}`);
+    let aChoisi = false;
+    slots.forEach((slot, si)=>{
+      const gn  = `${jour}_${slot.heure}`;
+      const ch  = parseInt(seg[si], 10);
+      if(ch > 0 && ch <= slot.artistes.length){
+        choix[gn] = slot.artistes[ch-1].nom;
+        aChoisi = true;
+      } else {
+        choix[gn] = 'Aucun';
+      }
+    });
+    if(aChoisi) jours.push(jour);
+  });
+  return { choix, jours };
+}
+
+/* ── Export ──────────────────────────────────────── */
+function genererMonCode(){
+  if(!hasAnySelection()){ alert("Tu n'as pas encore fait de sélection !"); return; }
+  const code = `${FESTIVAL_CODE}-${encoderChoix()}`;
+  document.getElementById('myExportCode').value = code;
+}
+
+function copierMonCode(){
+  const ta = document.getElementById('myExportCode');
+  if(!ta.value){ genererMonCode(); }
+  if(!ta.value) return;
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const btn = document.getElementById('btnCopierCode');
+    const orig = btn.textContent; btn.textContent='Copié !';
+    setTimeout(()=>btn.textContent=orig, 1500);
+  }).catch(()=>{ ta.select(); document.execCommand('copy'); });
+}
+
+/* ── Import ──────────────────────────────────────── */
+function importerAmi(){
+  const nomEl  = document.getElementById('amiNom');
+  const codeEl = document.getElementById('amiCode');
+  const errEl  = document.getElementById('importError');
+  const nom    = nomEl.value.trim();
+  const code   = codeEl.value.trim().toUpperCase();
+  errEl.classList.add('hidden'); errEl.textContent='';
+
+  if(!nom)  { errEl.textContent='Entre un prénom.'; errEl.classList.remove('hidden'); return; }
+  if(!code) { errEl.textContent='Colle le code de ton ami.'; errEl.classList.remove('hidden'); return; }
+  if(amis.find(a=>a.nom.toLowerCase()===nom.toLowerCase())){
+    errEl.textContent='Un ami avec ce prénom existe déjà.'; errEl.classList.remove('hidden'); return; }
+
+  // Vérifier le préfixe festival
+  const prefix = FESTIVAL_CODE + '-';
+  if(!code.startsWith(prefix)){
+    errEl.textContent=`Ce code n'est pas pour ${FESTIVAL_CODE} — mauvais festival ?`;
+    errEl.classList.remove('hidden'); return;
+  }
+
+  let choix, jours;
+  try{
+    const partie = code.slice(prefix.length);
+    ({ choix, jours } = decoderChoix(partie));
+  } catch(e){
+    errEl.textContent='Code invalide : '+e.message; errEl.classList.remove('hidden'); return;
+  }
+
+  const couleur = AMI_COLORS[amis.length % AMI_COLORS.length];
+  amis.push({ nom, couleur, jours, choix });
+  saveAmis();
+  nomEl.value=''; codeEl.value='';
+  shareTabActif = nom;
+  renderShare();
+}
+
+function supprimerAmi(nom){
+  amis = amis.filter(a=>a.nom!==nom);
+  if(shareTabActif===nom) shareTabActif=amis.length?amis[0].nom:null;
+  saveAmis();
+  renderShare();
+}
+// Exposer sur window pour les onclick inline dans le HTML généré dynamiquement
+window.supprimerAmi = supprimerAmi;
+window.genererMonCode = genererMonCode;
+window.copierMonCode = copierMonCode;
+window.importerAmi = importerAmi;
+window.renderCompareDay = renderCompareDay;
+
+/* ── Rendu principal de l'écran partage ─────────────── */
+function renderShare(){
+  // Ne PAS appeler loadAmis() ici — les données sont déjà dans amis[]
+  // loadAmis() n'est appelé qu'au démarrage (DOMContentLoaded)
+
+  // Panneau outils : ouvert si pas d'amis, fermé si comparaison disponible
+  const toolsBody  = document.getElementById('shareToolsBody');
+  const toolsArrow = document.getElementById('shareToolsArrow');
+  if(toolsBody && toolsArrow){
+    const hasAmis = amis.length > 0;
+    toolsBody.classList.toggle('hidden', hasAmis);
+    toolsArrow.classList.toggle('open', !hasAmis);
+  }
+
+  // Chips amis
+  const listEl = document.getElementById('amisList');
+  listEl.innerHTML = '';
+  if(amis.length){
+    // Onglet "Tous"
+    const all = document.createElement('div');
+    all.className = 'ami-chip'+(shareTabActif===null?' active':'');
+    all.style.cssText=`border-color:var(--muted);color:var(--text);background:transparent;`;
+    all.innerHTML=`<span class="ami-chip-dot" style="background:var(--muted)"></span>Tous`;
+    all.onclick=()=>{ shareTabActif=null; renderShare(); };
+    listEl.appendChild(all);
+
+    amis.forEach(ami=>{
+      const chip = document.createElement('div');
+      chip.className = 'ami-chip'+(shareTabActif===ami.nom?' active':'');
+      chip.style.cssText=`border-color:${ami.couleur.border};color:${ami.couleur.text};background:${ami.couleur.bg};`;
+      chip.innerHTML=`<span class="ami-chip-dot" style="background:${ami.couleur.border}"></span>${ami.nom}
+        <button class="ami-chip-del" title="Supprimer" onclick="event.stopPropagation();supprimerAmi('${ami.nom}')">×</button>`;
+      chip.onclick=()=>{ shareTabActif=ami.nom; renderShare(); };
+      listEl.appendChild(chip);
+    });
+  }
+
+  // Zone comparaison
+  const compareEl = document.getElementById('shareCompare');
+  if(!amis.length){ compareEl.classList.add('hidden'); return; }
+  compareEl.classList.remove('hidden');
+
+  // Onglets jours
+  const tabsEl = document.getElementById('shareTabs');
+  tabsEl.innerHTML='';
+  JOURS_ORDRE.forEach(jour=>{
+    const btn = document.createElement('button');
+    btn.className='share-tab';
+    btn.textContent=jour;
+    btn.dataset.jour=jour;
+    btn.onclick=()=>{
+      tabsEl.querySelectorAll('.share-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCompareDay(jour);
+    };
+    tabsEl.appendChild(btn);
+  });
+  // Activer le premier jour qui a des données
+  const premierJour = JOURS_ORDRE.find(j=>donneesFestival[j]) || JOURS_ORDRE[0];
+  tabsEl.querySelector(`[data-jour="${premierJour}"]`)?.classList.add('active');
+  renderCompareDay(premierJour);
+}
+
+/* ── Rendu d'un jour en vue comparaison ─────────────── */
+function renderCompareDay(jour){
+  const content = document.getElementById('shareCompareContent');
+  const moi = loadRaw();
+  const mesJours = loadJours()||[];
+
+  // Qui compare-t-on ? Moi + l'ami sélectionné OU moi + tous
+  const amisFiltres = shareTabActif ? amis.filter(a=>a.nom===shareTabActif) : amis;
+
+  // Stats globales
+  let nbMatch=0, nbDiff=0, nbSolo=0;
+
+  const slots = donneesFestival[jour]||[];
+  const sorted = [...slots].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
+
+  // En-têtes : Heure | Moi | Ami1 | Ami2 | …
+  let html = `<div class="compare-day-title">${jour}</div>`;
+
+  // Légende
+  html+=`<div class="compare-legend">
+    <div class="compare-legend-item"><span class="compare-legend-dot" style="background:rgba(42,158,90,.4)"></span>Même artiste</div>
+    <div class="compare-legend-item"><span class="compare-legend-dot" style="background:rgba(200,22,30,.3)"></span>Artistes différents</div>
+    <div class="compare-legend-item"><span class="compare-legend-dot" style="background:var(--border)"></span>Aucun</div>
+  </div>`;
+
+  // Tableau
+  html+=`<table class="compare-table"><thead><tr>
+    <th>Heure</th>
+    <th style="color:#f0ebe4">Moi</th>`;
+  amisFiltres.forEach(ami=>{
+    html+=`<th style="color:${ami.couleur.text}">${ami.nom}</th>`;
+  });
+  html+=`</tr></thead><tbody>`;
+
+  sorted.forEach(slot=>{
+    const gn = `${jour}_${slot.heure}`;
+    const maVal = moi[gn];
+    const maArtiste = (maVal&&maVal!=='Aucun') ? maVal : null;
+
+    const valeursAmis = amisFiltres.map(ami=>{
+      const v = ami.choix[gn];
+      return (v&&v!=='Aucun') ? v : null;
+    });
+
+    // N'afficher que les créneaux où au moins une personne a choisi quelque chose
+    const qqunVoitQch = maArtiste || valeursAmis.some(v=>v);
+    if(!qqunVoitQch) return;
+
+    // Calcul stats
+    const artistes = [maArtiste, ...valeursAmis].filter(Boolean);
+    const uniques = [...new Set(artistes)];
+    if(artistes.length>1){
+      if(uniques.length===1) nbMatch++;
+      else nbDiff++;
+    } else nbSolo++;
+
+    html+=`<tr><td class="time-col">${slot.heure}</td>`;
+
+    // Cellule moi
+    html+=`<td>${maArtiste
+      ? `<span class="cmp-cell ${valeursAmis.some(v=>v===maArtiste)?'cmp-match':'cmp-diff'}">${maArtiste}</span>`
+      : `<span class="cmp-none">—</span>`}</td>`;
+
+    // Cellules amis
+    valeursAmis.forEach((v,i)=>{
+      html+=`<td>${v
+        ? `<span class="cmp-cell ${v===maArtiste?'cmp-match':'cmp-diff'}" style="${v===maArtiste?'':'border-color:'+amisFiltres[i].couleur.border}">${v}</span>`
+        : `<span class="cmp-none">—</span>`}</td>`;
+    });
+    html+=`</tr>`;
+  });
+
+  html+=`</tbody></table>`;
+
+  // Stats
+  const total = nbMatch+nbDiff+nbSolo;
+  html=`<div class="compare-stats">
+    <div class="compare-stat">
+      <div class="compare-stat-num" style="color:#5dd492">${nbMatch}</div>
+      <div class="compare-stat-lbl">Ensemble</div>
+    </div>
+    <div class="compare-stat">
+      <div class="compare-stat-num" style="color:var(--red)">${nbDiff}</div>
+      <div class="compare-stat-lbl">Séparés</div>
+    </div>
+    <div class="compare-stat">
+      <div class="compare-stat-num" style="color:var(--muted)">${nbSolo}</div>
+      <div class="compare-stat-lbl">Solo</div>
+    </div>
+    <div class="compare-stat">
+      <div class="compare-stat-num" style="color:var(--gold)">${total?Math.round(nbMatch/total*100):0}%</div>
+      <div class="compare-stat-lbl">En commun</div>
+    </div>
+  </div>`+html;
+
+  content.innerHTML = html;
+}
 let devSimulation=null;
 
 function applyDevTime(){
