@@ -937,32 +937,52 @@ function renderRO(){
       });
       return {...cur,status:(maxOv>0&&bi>=0)?(worst<WATCHABLE?'conflict':'partial'):null};
     });
-    const hasConflicts=enriched.some(i=>i.status);
-    const cols=hasConflicts?['8%','8%','28%','22%','16%','18%']:['9%','9%','32%','26%','24%'];
-    const headers=hasConflicts?['Début','Fin','Artiste','Scène','Style','Statut']:['Début','Fin','Artiste','Scène','Style'];
+    const cols=['9%','9%','32%','26%','24%'];
+    const headers=['Début','Fin','Artiste','Scène','Style'];
     const t=document.createElement('table');
     t.innerHTML=`<colgroup>${cols.map(w=>`<col style="width:${w}">`).join('')}</colgroup>`;
     const hr=document.createElement('tr');
     headers.forEach(txt=>{ const th=document.createElement('th'); th.textContent=txt; hr.appendChild(th); });
     t.appendChild(hr);
-    enriched.forEach(item=>{
+
+    // Construire la liste complète slots triés avec pauses intercalées
+    const sorted=[...(donneesFestival[jour]||[])].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
+    let ci=0;
+    sorted.forEach(slot=>{
+      const concert=enriched.find(i=>i.debutStr===slot.heure);
       const tr=document.createElement('tr');
-      const key=sk(item.scene);
-      const cell=(h,cls='')=>{ const td=document.createElement('td'); td.innerHTML=h; if(cls) td.className=cls; return td; };
-      tr.appendChild(cell(`<span class="nowrap">${item.debutStr}</span>`));
-      tr.appendChild(cell(`<span class="nowrap">${item.finStr}</span>`));
-      tr.appendChild(cell(item.nom));
-      tr.appendChild(cell(`<span class="scene-pill ${key}">${sl(item.scene)}</span>`));
-      tr.appendChild(cell(item.style||'—'));
-      if(hasConflicts){
-        const std=document.createElement('td');
-        if(item.status){ const b=document.createElement('span'); b.className='conflict-badge '+item.status; b.textContent=item.status==='conflict'?'Conflit':'Partiel'; std.appendChild(b); }
-        tr.appendChild(std);
+      if(concert){
+        ci++;
+        const key=sk(concert.scene);
+        const cell=(h,cls='')=>{ const td=document.createElement('td'); td.innerHTML=h; if(cls) td.className=cls; return td; };
+        tr.appendChild(cell(`<span class="nowrap">${concert.debutStr}</span>`));
+        tr.appendChild(cell(`<span class="nowrap">${concert.finStr}</span>`));
+        tr.appendChild(cell(concert.nom));
+        tr.appendChild(cell(`<span class="scene-pill ${key}">${sl(concert.scene)}</span>`));
+        tr.appendChild(cell(concert.style||'—'));
+      } else {
+        // Ligne pause
+        tr.style.opacity='.4';
+        const td=document.createElement('td'); td.colSpan=5;
+        td.style.cssText='border:1px solid #231f1f;padding:6px 10px;font-family:Oswald,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);';
+        td.innerHTML=`<span class="nowrap" style="color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:16px;margin-right:10px;">${slot.heure}</span>Pause`;
+        tr.appendChild(td);
       }
       t.appendChild(tr);
     });
+
     sec.appendChild(t); container.appendChild(sec);
   });
+
+  // Boutons d'action en bas
+  const actionsBottom=document.createElement('div');
+  actionsBottom.className='ro-actions'; actionsBottom.style.marginTop='32px';
+  actionsBottom.innerHTML=`
+    <button onclick="genererPDF()">Télécharger en PDF</button>
+    <button class="btn-ghost" onclick="goTo('choix')">Modifier mes choix</button>
+    <button class="btn-ghost" onclick="document.getElementById('btnResetMem').click()">Tout effacer</button>
+  `;
+  container.appendChild(actionsBottom);
 }
 
 /* ════ PDF ════════════════════════════════════════════ */
