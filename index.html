@@ -356,6 +356,7 @@ tr:hover td{background:var(--surface2);}
 .cmp-match{background:rgba(42,158,90,.15);border:1px solid rgba(42,158,90,.35);color:#5dd492;}
 .cmp-diff{background:rgba(200,22,30,.08);border:1px solid rgba(200,22,30,.25);color:var(--text);}
 .cmp-none{color:var(--muted);font-style:italic;}
+.pause-row td{background:rgba(255,255,255,0.03);}
 .cmp-icon{margin-right:5px;font-size:10px;}
 
 /* Légende corrélation */
@@ -1263,7 +1264,7 @@ function renderCompareDay(jour){
   const amisFiltres = shareTabActif ? amis.filter(a=>a.nom===shareTabActif) : amis;
 
   // Stats globales
-  let nbMatch=0, nbDiff=0, nbSolo=0;
+  let nbMatch=0, nbPause=0, nbSolo=0;
 
   const slots = donneesFestival[jour]||[];
   const sorted = [...slots].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
@@ -1274,8 +1275,8 @@ function renderCompareDay(jour){
   // Légende
   html+=`<div class="compare-legend">
     <div class="compare-legend-item"><span class="compare-legend-dot" style="background:rgba(42,158,90,.4)"></span>Même artiste</div>
-    <div class="compare-legend-item"><span class="compare-legend-dot" style="background:rgba(200,22,30,.3)"></span>Artistes différents</div>
-    <div class="compare-legend-item"><span class="compare-legend-dot" style="background:var(--border)"></span>Aucun</div>
+    <div class="compare-legend-item"><span class="compare-legend-dot" style="background:rgba(200,22,30,.3)"></span>Pas ensemble</div>
+    <div class="compare-legend-item"><span class="compare-legend-dot" style="background:rgba(255,255,255,0.06)"></span>Pause ensemble</div>
   </div>`;
 
   // Tableau
@@ -1297,19 +1298,18 @@ function renderCompareDay(jour){
       return (v&&v!=='Aucun') ? v : null;
     });
 
-    // N'afficher que les créneaux où au moins une personne a choisi quelque chose
-    const qqunVoitQch = maArtiste || valeursAmis.some(v=>v);
-    if(!qqunVoitQch) return;
-
     // Calcul stats
-    const artistes = [maArtiste, ...valeursAmis].filter(Boolean);
-    const uniques = [...new Set(artistes)];
-    if(artistes.length>1){
-      if(uniques.length===1) nbMatch++;
-      else nbDiff++;
-    } else nbSolo++;
+    const tousAucun = !maArtiste && valeursAmis.every(v => !v);
+    if(tousAucun){
+      nbPause++;
+    } else {
+      const artistes = [maArtiste, ...valeursAmis].filter(Boolean);
+      const uniques = [...new Set(artistes)];
+      if(artistes.length > 1 && uniques.length === 1) nbMatch++;
+      else nbSolo++;
+    }
 
-    html+=`<tr><td class="time-col">${slot.heure}</td>`;
+    html+=`<tr${tousAucun?' class="pause-row"':''}><td class="time-col">${slot.heure}</td>`;
 
     // Cellule moi
     html+=`<td>${maArtiste
@@ -1328,22 +1328,22 @@ function renderCompareDay(jour){
   html+=`</tbody></table>`;
 
   // Stats
-  const total = nbMatch+nbDiff+nbSolo;
+  const totalActif = nbMatch + nbSolo;
   html=`<div class="compare-stats">
     <div class="compare-stat">
       <div class="compare-stat-num" style="color:#5dd492">${nbMatch}</div>
       <div class="compare-stat-lbl">Ensemble</div>
     </div>
     <div class="compare-stat">
-      <div class="compare-stat-num" style="color:var(--red)">${nbDiff}</div>
-      <div class="compare-stat-lbl">Séparés</div>
+      <div class="compare-stat-num" style="color:#6aaff0">${nbPause}</div>
+      <div class="compare-stat-lbl">Pause ens.</div>
     </div>
     <div class="compare-stat">
-      <div class="compare-stat-num" style="color:var(--muted)">${nbSolo}</div>
+      <div class="compare-stat-num" style="color:var(--red)">${nbSolo}</div>
       <div class="compare-stat-lbl">Solo</div>
     </div>
     <div class="compare-stat">
-      <div class="compare-stat-num" style="color:var(--gold)">${total?Math.round(nbMatch/total*100):0}%</div>
+      <div class="compare-stat-num" style="color:var(--gold)">${totalActif?Math.round(nbMatch/totalActif*100):0}%</div>
       <div class="compare-stat-lbl">En commun</div>
     </div>
   </div>`+html;
