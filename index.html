@@ -459,10 +459,6 @@ body.pdf-mode .day-sticky{display:none!important;}
 
   <!-- ÉCRAN 4 : MODE LIVE -->
   <div class="screen" id="screen-live">
-    <div class="live-clock-wrap">
-      <div class="live-clock" id="liveClock">--:--:--</div>
-      <div class="live-date" id="liveDate">—</div>
-    </div>
     <div id="live-content"></div>
   </div>
 
@@ -1405,7 +1401,6 @@ function renderCountdown(){
       <span class="live-cd-sep">:</span>
       <div class="live-cd-unit"><span class="live-cd-num" id="cd-s">${String(s).padStart(2,'0')}</span><span class="live-cd-lbl">sec</span></div>
     </div>
-    <div class="live-countdown-date">Jeudi 13 Août 2026 · Carhaix</div>
   </div>`;
 }
 
