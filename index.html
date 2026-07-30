@@ -178,6 +178,7 @@ button:active{transform:translateY(1px);}
 .live-countdown-digits{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
 .live-cd-unit{display:flex;flex-direction:column;align-items:center;gap:4px;}
 .live-cd-num{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,10vw,88px);color:var(--white);letter-spacing:4px;line-height:1;text-shadow:0 0 32px var(--red-glow);}
+.live-cd-num-days{color:var(--gold);text-shadow:0 0 32px rgba(200,150,42,.45);}
 .live-cd-sep{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,8vw,72px);color:var(--red);line-height:1;padding-top:4px;}
 .live-cd-lbl{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
 .live-countdown-date{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:6px;color:var(--muted);margin-top:24px;}
@@ -1383,17 +1384,23 @@ function getNowContext(){
   return null;
 }
 
+function joursCalendaires(){
+  const auj = new Date(); const aujDate = new Date(auj.getFullYear(),auj.getMonth(),auj.getDate());
+  const fest = new Date(2026,7,13);
+  return Math.max(0, Math.round((fest-aujDate)/86400000));
+}
+
 function renderCountdown(){
   const target=new Date('2026-08-13T15:00:00');
   const diff=target-new Date();
   if(diff<=0) return null;
   const totalSec=Math.floor(diff/1000);
-  const j=Math.floor(totalSec/86400),h=Math.floor((totalSec%86400)/3600);
+  const j=joursCalendaires(),h=Math.floor((totalSec%86400)/3600);
   const mn=Math.floor((totalSec%3600)/60),s=totalSec%60;
   return `<div class="live-countdown-wrap">
     <div class="live-countdown-label">Le festival commence dans</div>
     <div class="live-countdown-digits">
-      <div class="live-cd-unit"><span class="live-cd-num" id="cd-j">${String(j).padStart(2,'0')}</span><span class="live-cd-lbl">jours</span></div>
+      <div class="live-cd-unit"><span class="live-cd-num live-cd-num-days" id="cd-j">${String(j).padStart(2,'0')}</span><span class="live-cd-lbl">jours</span></div>
       <span class="live-cd-sep">:</span>
       <div class="live-cd-unit"><span class="live-cd-num" id="cd-h">${String(h).padStart(2,'0')}</span><span class="live-cd-lbl">heures</span></div>
       <span class="live-cd-sep">:</span>
@@ -1409,7 +1416,7 @@ function tickCountdown(){
   if(diff<=0){ renderLive(); return; }
   const totalSec=Math.floor(diff/1000);
   const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=String(v).padStart(2,'0'); };
-  set('cd-j',Math.floor(totalSec/86400));
+  set('cd-j',joursCalendaires());
   set('cd-h',Math.floor((totalSec%86400)/3600));
   set('cd-m',Math.floor((totalSec%3600)/60));
   set('cd-s',totalSec%60);
