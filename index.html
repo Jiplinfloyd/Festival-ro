@@ -175,8 +175,11 @@ button:active{transform:translateY(1px);}
 /* ── ONGLETS JOURS CHOIX ─────────────────────────── */
 #choix-day-tabs{position:sticky;top:var(--header-h,64px);z-index:60;background:linear-gradient(180deg,#0e0c0c 0%,rgba(14,12,12,.97) 100%);border-bottom:1px solid var(--border);padding:7px 20px;margin:0 -20px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
 #choix-day-tabs::-webkit-scrollbar{display:none;}
-.choix-day-tab{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);background:transparent;padding:4px 16px;border-radius:2px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s,background .15s;flex-shrink:0;}
+.choix-day-tab{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);background:transparent;padding:4px 16px;border-radius:2px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s,background .15s;flex-shrink:0;display:flex;align-items:center;gap:6px;}
 .choix-day-tab.active{color:var(--red);border-color:var(--red);background:rgba(200,22,30,.08);}
+.choix-day-tab:not(.active):hover{color:var(--white);border-color:var(--white);}
+.tab-del{font-size:15px;opacity:.55;line-height:1;margin-left:2px;transition:opacity .15s;}
+.tab-del:hover{opacity:1;}
 /* ── JOUR RÉDUCTIBLE ─────────────────────────────── */
 .day-group-header{display:flex;align-items:flex-end;justify-content:space-between;cursor:pointer;user-select:none;}
 .day-collapse-btn{background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;padding:0 4px 8px;line-height:1;transition:color .15s,transform .2s;flex-shrink:0;}
@@ -752,22 +755,47 @@ window.addEventListener('DOMContentLoaded',()=>{
 /* ════ CONSTRUCTION PAGE CHOIX ══════════════════════ */
 function getHeaderH(){ return document.querySelector('.site-header')?.offsetHeight||64; }
 
+function scrollToJour(jour, tabsEl){
+  const group=document.querySelector(`.day-group[data-jour="${jour}"]`);
+  if(!group) return;
+  const headerH=getHeaderH();
+  const tabsH=(tabsEl||document.getElementById('choix-day-tabs'))?.offsetHeight||0;
+  const top=group.getBoundingClientRect().top+window.scrollY-headerH-tabsH-4;
+  window.scrollTo({top,behavior:'smooth'});
+}
+function toggleJour(jour){
+  const idx=joursChoisis.indexOf(jour);
+  if(idx>=0){
+    if(joursChoisis.length<=1) return; // au moins un jour
+    joursChoisis=joursChoisis.filter(j=>j!==jour);
+  } else {
+    joursChoisis=[...joursChoisis,jour].sort((a,b)=>JOURS_ORDRE.indexOf(a)-JOURS_ORDRE.indexOf(b));
+  }
+  saveJours(joursChoisis);
+  document.getElementById('choix-content').innerHTML='';
+  buildChoixUI();
+  if(joursChoisis.includes(jour)) setTimeout(()=>scrollToJour(jour),120);
+}
 function buildChoixDayTabs(){
   const tabsEl=document.getElementById('choix-day-tabs');
   if(!tabsEl) return;
   tabsEl.innerHTML='';
-  joursChoisis.forEach(jour=>{
+  JOURS_ORDRE.forEach(jour=>{
     if(!donneesFestival[jour]) return;
+    const isActive=joursChoisis.includes(jour);
     const btn=document.createElement('button');
-    btn.className='choix-day-tab'; btn.dataset.jour=jour; btn.textContent=jour;
+    btn.className='choix-day-tab'+(isActive?' active':''); btn.dataset.jour=jour;
     btn.addEventListener('click',()=>{
-      const group=document.querySelector(`.day-group[data-jour="${jour}"]`);
-      if(!group) return;
-      const headerH=getHeaderH();
-      const tabsH=tabsEl.offsetHeight||0;
-      const top=group.getBoundingClientRect().top+window.scrollY-headerH-tabsH-4;
-      window.scrollTo({top,behavior:'smooth'});
+      if(isActive) scrollToJour(jour,tabsEl); else toggleJour(jour);
     });
+    const label=document.createElement('span'); label.textContent=jour;
+    btn.appendChild(label);
+    if(isActive){
+      const del=document.createElement('span'); del.className='tab-del'; del.textContent='×';
+      del.title='Retirer ce jour'; del.style.display=joursChoisis.length<=1?'none':'';
+      del.addEventListener('click',e=>{e.stopPropagation();toggleJour(jour);});
+      btn.appendChild(del);
+    }
     tabsEl.appendChild(btn);
   });
   requestAnimationFrame(()=>{
@@ -787,7 +815,7 @@ function updateChoixActiveTab(){
     const group=document.querySelector(`.day-group[data-jour="${jour}"]`);
     if(group&&group.getBoundingClientRect().top<=threshold) active=jour;
   });
-  tabsEl.querySelectorAll('.choix-day-tab').forEach(t=>t.classList.toggle('active',t.dataset.jour===active));
+  tabsEl.querySelectorAll('.choix-day-tab.active').forEach(t=>t.classList.toggle('scroll-active',t.dataset.jour===active));
 }
 
 function buildChoixUI(){
