@@ -157,7 +157,7 @@ button:active{transform:translateY(1px);}
 /* ── STICKY DAY HEADER ─────────────────────────────── */
 .day-sticky{
   position:sticky;
-  top:var(--header-h,64px);
+  top:calc(var(--header-h,64px) + var(--choix-tabs-h,0px));
   z-index:50;
   background:linear-gradient(180deg,#0e0c0c 0%,rgba(14,12,12,.97) 100%);
   border-bottom:1px solid var(--border);
@@ -171,6 +171,18 @@ button:active{transform:translateY(1px);}
 .day-sticky-track{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
 .day-sticky-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--red),var(--gold));transition:width .3s ease;}
 .day-sticky-count{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+
+/* ── ONGLETS JOURS CHOIX ─────────────────────────── */
+#choix-day-tabs{position:sticky;top:var(--header-h,64px);z-index:60;background:linear-gradient(180deg,#0e0c0c 0%,rgba(14,12,12,.97) 100%);border-bottom:1px solid var(--border);padding:7px 20px;margin:0 -20px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+#choix-day-tabs::-webkit-scrollbar{display:none;}
+.choix-day-tab{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);background:transparent;padding:4px 16px;border-radius:2px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s,background .15s;flex-shrink:0;}
+.choix-day-tab.active{color:var(--red);border-color:var(--red);background:rgba(200,22,30,.08);}
+/* ── JOUR RÉDUCTIBLE ─────────────────────────────── */
+.day-group-header{display:flex;align-items:flex-end;justify-content:space-between;cursor:pointer;user-select:none;}
+.day-collapse-btn{background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;padding:0 4px 8px;line-height:1;transition:color .15s,transform .2s;flex-shrink:0;}
+.day-collapse-btn:hover{color:var(--white);}
+.day-group.collapsed .day-collapse-btn{transform:rotate(-90deg);}
+.day-group.collapsed .slot,.day-group.collapsed .day-progress{display:none;}
 
 /* ── COUNTDOWN PRÉ-FESTIVAL ────────────────────────── */
 .live-countdown-wrap{text-align:center;padding:40px 20px 32px;}
@@ -440,6 +452,7 @@ body.pdf-mode .day-sticky{display:none!important;}
       <div class="scene-legend-item"><span class="scene-dot massey"></span> Massey Ferguscène</div>
       <div class="scene-legend-item"><span class="scene-dot supo"></span> Supositor Stage</div>
     </div>
+    <div id="choix-day-tabs"></div>
     <div id="choix-content"></div>
     <div class="validate-row">
       <button id="btnValider">Valider ma sélection →</button>
@@ -667,6 +680,7 @@ function goTo(screen){
   if(screen==='live')   renderLive();
   if(screen==='choix')  buildChoixUI();
   if(screen==='share')  renderShare();
+  if(screen!=='choix')  document.documentElement.style.setProperty('--choix-tabs-h','0px');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -714,6 +728,9 @@ window.addEventListener('DOMContentLoaded',()=>{
     arrow.classList.toggle('open', !isOpen);
   });
 
+  // Scroll → onglet actif sur l'écran choix
+  window.addEventListener('scroll',()=>{ if(currentScreen==='choix') updateChoixActiveTab(); },{passive:true});
+
   // Charger les amis sauvegardés au démarrage
   loadAmis();
 
@@ -735,9 +752,48 @@ window.addEventListener('DOMContentLoaded',()=>{
 /* ════ CONSTRUCTION PAGE CHOIX ══════════════════════ */
 function getHeaderH(){ return document.querySelector('.site-header')?.offsetHeight||64; }
 
+function buildChoixDayTabs(){
+  const tabsEl=document.getElementById('choix-day-tabs');
+  if(!tabsEl) return;
+  tabsEl.innerHTML='';
+  joursChoisis.forEach(jour=>{
+    if(!donneesFestival[jour]) return;
+    const btn=document.createElement('button');
+    btn.className='choix-day-tab'; btn.dataset.jour=jour; btn.textContent=jour;
+    btn.addEventListener('click',()=>{
+      const group=document.querySelector(`.day-group[data-jour="${jour}"]`);
+      if(!group) return;
+      const headerH=getHeaderH();
+      const tabsH=tabsEl.offsetHeight||0;
+      const top=group.getBoundingClientRect().top+window.scrollY-headerH-tabsH-4;
+      window.scrollTo({top,behavior:'smooth'});
+    });
+    tabsEl.appendChild(btn);
+  });
+  requestAnimationFrame(()=>{
+    const h=tabsEl.offsetHeight||0;
+    document.documentElement.style.setProperty('--choix-tabs-h',h+'px');
+  });
+  updateChoixActiveTab();
+}
+function updateChoixActiveTab(){
+  const tabsEl=document.getElementById('choix-day-tabs');
+  if(!tabsEl||!tabsEl.children.length) return;
+  const headerH=getHeaderH();
+  const tabsH=tabsEl.offsetHeight||0;
+  const threshold=headerH+tabsH+16;
+  let active=joursChoisis.find(j=>donneesFestival[j])||'';
+  joursChoisis.forEach(jour=>{
+    const group=document.querySelector(`.day-group[data-jour="${jour}"]`);
+    if(group&&group.getBoundingClientRect().top<=threshold) active=jour;
+  });
+  tabsEl.querySelectorAll('.choix-day-tab').forEach(t=>t.classList.toggle('active',t.dataset.jour===active));
+}
+
 function buildChoixUI(){
   const container=document.getElementById('choix-content');
   const existing=Array.from(container.querySelectorAll('.day-group')).map(d=>d.dataset.jour);
+  buildChoixDayTabs();
   if(existing.length&&joursChoisis.every((j,i)=>j===existing[i])&&joursChoisis.length===existing.length){
     loadSelectionsIntoUI();
     joursChoisis.forEach(j=>{updateProgress(j);updateConflictsForDay(j);});
@@ -758,8 +814,14 @@ function buildChoixUI(){
     sentinel.style.cssText='height:1px;margin-bottom:-1px;';
     div.appendChild(sentinel);
 
-    // Titre grand
-    const h3=document.createElement('h3'); h3.textContent=jour; div.appendChild(h3);
+    // Titre grand avec bouton collapse
+    const groupHeader=document.createElement('div'); groupHeader.className='day-group-header';
+    const h3=document.createElement('h3'); h3.textContent=jour;
+    const collapseBtn=document.createElement('button'); collapseBtn.className='day-collapse-btn'; collapseBtn.textContent='▼';
+    collapseBtn.title='Réduire / Agrandir';
+    groupHeader.appendChild(h3); groupHeader.appendChild(collapseBtn);
+    groupHeader.addEventListener('click',()=>div.classList.toggle('collapsed'));
+    div.appendChild(groupHeader);
     const bar=document.createElement('div'); bar.className='day-bar'; div.appendChild(bar);
 
     // En-tête sticky
@@ -812,19 +874,21 @@ function buildChoixUI(){
 function setupStickyObservers(){
   if(window._stickyObserver) window._stickyObserver.disconnect();
   const headerH=getHeaderH();
+  const tabsH=document.getElementById('choix-day-tabs')?.offsetHeight||0;
+  const totalTop=headerH+tabsH;
   document.documentElement.style.setProperty('--header-h', headerH+'px');
   window._stickyObserver=new IntersectionObserver(entries=>{
     entries.forEach(entry=>{
       const jour=entry.target.dataset.jour;
       const stickyEl=document.querySelector(`.day-sticky[data-sticky-jour="${jour}"]`);
       if(!stickyEl) return;
-      if(!entry.isIntersecting && entry.boundingClientRect.top<headerH){
+      if(!entry.isIntersecting && entry.boundingClientRect.top<totalTop){
         stickyEl.classList.add('is-stuck');
       } else {
         stickyEl.classList.remove('is-stuck');
       }
     });
-  },{rootMargin:`-${headerH}px 0px 0px 0px`,threshold:0});
+  },{rootMargin:`-${totalTop}px 0px 0px 0px`,threshold:0});
   document.querySelectorAll('.day-sentinel').forEach(s=>window._stickyObserver.observe(s));
 }
 
