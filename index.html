@@ -1658,8 +1658,18 @@ function renderLive(){
       let backHtml=`<div class="live-now-label" style="color:rgba(150,100,230,.75)">● En même temps <span style="font-size:9px;opacity:.6;margin-left:6px;letter-spacing:1px;">↻ RETOURNER</span></div>`;
       nowConc.forEach(c=>{
         const ck=sk(c.scene);
+        let cSM=toMin(c.debutStr),cEM=c.finStr?toMin(c.finStr):null;
+        let cSN=cSM,cEN=cEM;
+        if(cSN!=null&&cSN<ROLLOVER){cSN+=24*60;if(cEN!=null)cEN+=24*60;}
+        const cPct=(cSN!=null&&cEN!=null)?Math.min(100,(nowMin-cSN)/(cEN-cSN)*100).toFixed(1):0;
+        const cRem=cEN!=null?Math.ceil(cEN-nowMin):null;
         backHtml+=`<div class="live-now-artist" style="margin-top:6px">${c.nom}<span class="live-scene-badge ${ck}">${sl(c.scene)}</span></div>
-<div class="live-now-meta" style="color:rgba(200,170,255,.55)">${c.style||''}&nbsp;·&nbsp;${c.debutStr}${c.finStr?' – '+c.finStr:''}</div>`;
+<div class="live-now-meta" style="color:rgba(200,170,255,.55)">${c.style||''}&nbsp;·&nbsp;${c.debutStr}${c.finStr?' – '+c.finStr:''}</div>
+<div class="live-set-bar-wrap">
+  <div class="live-set-bar-labels"><span style="color:rgba(150,100,230,.55)">${c.debutStr}</span><span style="color:rgba(150,100,230,.55)">${c.finStr}</span></div>
+  <div class="live-set-bar-track" style="background:rgba(130,90,210,.2)"><div class="live-set-bar-fill" style="width:${cPct}%;background:linear-gradient(90deg,rgba(100,60,200,.8),rgba(160,110,240,.8))"></div></div>
+  ${cRem!=null?`<div class="live-set-remaining" style="color:rgba(150,100,230,.75)">Il reste ${cRem} min</div>`:''}
+</div>`;
       });
       html+=`<div class="ro-flip-card" onclick="this.classList.toggle('flipped')"><div class="ro-flip-inner">
         <div class="ro-flip-front" style="border:1px solid var(--border);border-top:4px solid var(--red);border-radius:4px;padding:20px 24px 18px;background:var(--surface);box-shadow:0 8px 40px rgba(0,0,0,.5);margin-bottom:0">${frontInner}</div>
@@ -1688,10 +1698,13 @@ function renderLive(){
         let nb='';
         nextConc.forEach(nc=>{
           const nk=sk(nc.scene);
-          const nSceneC={dave:'var(--scene-dave)',bruce:'var(--scene-bruce)',massey:'var(--scene-massey)',supo:'var(--scene-supo)'}[nk]||'var(--muted)';
-          nb+=`<div class="next-countdown" style="color:rgba(150,100,230,.85);min-width:58px;text-align:center;flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;">≈<small style="display:block;font-size:10px;color:rgba(150,100,230,.45);letter-spacing:2px;font-family:'Oswald',sans-serif;">même</small></div>
+          let ncSM=toMin(nc.debutStr),ncSN=ncSM;
+          if(ncSN!=null&&ncSN<ROLLOVER) ncSN+=24*60;
+          const ncMa=ncSN!=null?Math.ceil(ncSN-nowMin):ma;
+          const ncCountdown=ncMa<60?`${ncMa}<small>min</small>`:`${Math.floor(ncMa/60)}h${String(ncMa%60).padStart(2,'0')}<small>dans</small>`;
+          nb+=`<div class="next-countdown" style="color:rgba(150,100,230,.85);min-width:58px;text-align:center;flex-shrink:0">${ncCountdown}</div>
 <div class="next-info" style="flex:1"><div class="next-artist" style="color:var(--white)">${nc.nom}</div><div class="next-meta" style="color:rgba(200,170,255,.55)">${sl(nc.scene)}${nc.style?' · '+nc.style:''}</div></div>
-<div class="next-time" style="color:rgba(150,100,230,.7);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;flex-shrink:0">${nc.debutStr}</div>`;
+<div class="next-time" style="color:rgba(150,100,230,.7);flex-shrink:0">${nc.debutStr}</div>`;
         });
         html+=`<div class="ro-flip-card" onclick="this.classList.toggle('flipped')"><div class="ro-flip-inner">
           <div class="ro-flip-front live-next-card ${key}" style="border:none;border-left:3px solid ${sceneC};border-radius:3px;padding:12px 16px;display:flex;align-items:center;gap:16px;background:var(--surface)">${cardInner}</div>
