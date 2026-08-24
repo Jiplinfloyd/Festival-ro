@@ -1708,7 +1708,7 @@ function renderLive(){
         });
         html+=`<div class="ro-flip-card" onclick="this.classList.toggle('flipped')"><div class="ro-flip-inner">
           <div class="ro-flip-front live-next-card ${key}" style="border:none;border-left:3px solid ${sceneC};border-radius:3px;padding:12px 16px;display:flex;align-items:center;gap:16px;background:var(--surface)">${cardInner}</div>
-          <div class="ro-flip-back" style="border-radius:3px;border-left:3px solid rgba(130,90,210,.5);padding:12px 16px;display:flex;align-items:center;gap:16px">${nb}</div>
+          <div class="ro-flip-back" style="border-radius:3px;border-left:3px solid rgba(130,90,210,.5);padding:12px 16px;display:flex;flex-direction:row;align-items:center;gap:16px">${nb}</div>
         </div></div>`;
       } else {
         html+=`<div class="live-next-card ${key}">${cardInner}</div>`;
