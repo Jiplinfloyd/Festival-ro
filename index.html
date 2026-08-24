@@ -292,45 +292,31 @@ tr:hover td{background:var(--surface2);}
 .ro-flip-card{perspective:900px;cursor:pointer;user-select:none;}
 .ro-flip-card.no-flip{cursor:default;}
 .ro-flip-inner{position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
-.ro-flip-card.flipped .ro-flip-inner{transform:rotateY(180deg);}
+.ro-flip-card.flipped .ro-flip-inner{transform:rotateX(180deg);}
 .ro-flip-front{position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3px;border:1px solid var(--border);padding:14px 16px;background:var(--surface);}
 .ro-flip-back{
   position:absolute;top:0;left:0;right:0;bottom:0;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  transform:rotateY(180deg);
+  transform:rotateX(180deg);
   background:linear-gradient(135deg,#150e2a 0%,#0e0a1e 100%);
   border:1px solid rgba(130,90,210,.4);border-radius:3px;
   padding:14px 16px;overflow:hidden;
   display:flex;flex-direction:column;justify-content:center;
 }
-.ro-cards-wrap{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
-.ro-pdf-table{display:none;}
-body.pdf-mode .ro-pdf-table{display:table!important;}
-body.pdf-mode .ro-cards-wrap{display:none!important;}
-.ro-card-time{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--red);margin-bottom:3px;}
-.ro-card-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,34px);letter-spacing:3px;color:var(--white);line-height:1;margin-bottom:6px;}
-.ro-card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:4px;}
-.ro-card-style{font-family:'Oswald',sans-serif;font-size:12px;color:var(--muted);letter-spacing:.5px;margin-top:3px;}
-.ro-card-flip-hint{margin-top:8px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);opacity:.5;text-align:right;}
-.ro-back-label{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(150,100,230,.8);margin-bottom:10px;}
-.ro-back-artist{margin-bottom:8px;}
-.ro-back-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(20px,3.5vw,30px);letter-spacing:3px;color:var(--white);line-height:1;}
-.ro-back-time{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:rgba(150,100,230,.8);margin-top:2px;}
-.ro-back-style{font-family:'Oswald',sans-serif;font-size:12px;color:rgba(200,170,255,.55);letter-spacing:.5px;margin-top:2px;}
-.ro-back-flip-hint{margin-top:10px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(150,100,230,.45);text-align:right;}
-.ro-pause-item{display:flex;align-items:center;gap:12px;padding:5px 8px;opacity:.32;border-left:2px solid var(--border);}
-.ro-pause-time{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--red);min-width:44px;flex-shrink:0;}
-.ro-pause-artists{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-/* RO flip-x (axe horizontal — visuel tableau) */
-.ro-flip-card.flip-x .ro-flip-back{transform:rotateX(180deg);flex-direction:row;align-items:stretch;}
-.ro-flip-card.flip-x.flipped .ro-flip-inner{transform:rotateX(180deg);}
-.ro-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:3px;overflow:hidden;font-family:'Roboto Condensed',sans-serif;font-size:13px;margin-top:12px;}
-.ro-table-header{display:flex;background:linear-gradient(90deg,rgba(200,22,30,.85),rgba(150,16,22,.85));border-bottom:1px solid rgba(200,22,30,.4);}
-.ro-th{font-family:'Oswald',sans-serif;font-weight:600;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:10px;color:var(--white);flex-shrink:0;}
-.ro-tr{display:flex;align-items:center;}
-.ro-td{padding:9px 10px;}
-.ro-td+.ro-td{border-left:1px solid #231f1f;}
-.ro-pause-row{display:flex;opacity:.38;border-bottom:1px solid #231f1f;}
+/* RO accordion table */
+.ro-screen-table{width:100%;border-collapse:collapse;margin-top:12px;font-family:'Roboto Condensed',sans-serif;font-size:13px;}
+.ro-screen-table th{font-family:'Oswald',sans-serif;font-weight:600;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:10px;color:var(--white);background:linear-gradient(90deg,rgba(200,22,30,.85),rgba(150,16,22,.85));border:none;border-bottom:1px solid rgba(200,22,30,.4);text-align:left;}
+.ro-screen-table td{padding:9px 10px;border:none;border-bottom:1px solid #231f1f;color:var(--white);vertical-align:middle;}
+.ro-concert-row:hover td{background:rgba(255,255,255,.03);}
+.ro-concert-row.expanded td{background:rgba(130,90,210,.08);}
+.ro-detail-row{display:none;}
+.ro-detail-row.open{display:table-row;}
+.ro-detail-item{display:flex;align-items:center;padding:8px 10px;background:linear-gradient(135deg,rgba(21,14,42,.9),rgba(14,10,30,.9));border-top:1px solid rgba(130,90,210,.15);}
+.ro-detail-time{flex:0 0 9%;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:rgba(150,100,230,.8);}
+.ro-detail-fin{flex:0 0 9%;font-size:11px;color:rgba(150,100,230,.45);}
+.ro-detail-name{flex:1;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--white);}
+.ro-detail-scene{flex:0 0 26%;}
+.ro-detail-style{flex:0 0 24%;font-size:12px;color:rgba(200,170,255,.5);}
 
 /* ── ÉCRAN PARTAGE ─────────────────────────────────── */
 .share-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,7vw,68px);letter-spacing:8px;color:var(--white);line-height:1;margin:0 0 4px;text-shadow:0 0 40px var(--red-glow);}
@@ -448,6 +434,7 @@ body.pdf-mode table{width:100%!important;table-layout:fixed;}
 body.pdf-mode th,body.pdf-mode td{padding:6px 8px!important;font-size:12px!important;}
 body.pdf-mode *{box-sizing:border-box!important;}
 body.pdf-mode .day-sticky{display:none!important;}
+body.pdf-mode .ro-detail-row{display:none!important;}
 
 .hidden{display:none!important;}
 ::-webkit-scrollbar{width:6px;}
@@ -1102,97 +1089,56 @@ function renderRO(){
     });
     const sorted=[...(donneesFestival[jour]||[])].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
 
-    // ── Table visuelle flip-x (écran) ──────────────────────────
-    const mkTd=(html,fx,xtra='')=>`<div class="ro-td" style="${fx};${xtra}">${html}</div>`;
-    const wrap=document.createElement('div'); wrap.className='ro-table-wrap';
-    // Header
-    const hdr=document.createElement('div'); hdr.className='ro-table-header';
-    [['Début','flex:0 0 9%'],['Fin','flex:0 0 9%'],['Artiste','flex:1'],['Scène','flex:0 0 26%'],['Style','flex:0 0 24%']].forEach(([txt,fx])=>{
-      const th=document.createElement('div'); th.className='ro-th'; th.style.cssText=fx; th.textContent=txt; hdr.appendChild(th);
-    });
-    wrap.appendChild(hdr);
-    sorted.forEach(slot=>{
-      const concert=enriched.find(i=>i.slotHeure===slot.heure);
-      if(concert){
-        const key=sk(concert.scene);
-        const concurrents=getSlotConcurrents(jour,slot.heure,concert.nom);
-        const hasFlip=concurrents.length>0;
-        const card=document.createElement('div');
-        card.className='ro-flip-card flip-x'+(hasFlip?'':' no-flip');
-        if(hasFlip) card.onclick=()=>card.classList.toggle('flipped');
-        const inner=document.createElement('div'); inner.className='ro-flip-inner';
-        // Front
-        const front=document.createElement('div'); front.className='ro-flip-front ro-tr';
-        front.style.cssText=`border:none;border-left:3px solid ${scC[key]||'var(--border)'};border-radius:0;padding:0;background:var(--surface);`;
-        let sb='';
-        if(concert.status==='conflict') sb=`<span class="conflict-badge conflict" style="margin-left:6px;font-size:10px;vertical-align:middle">⚠</span>`;
-        else if(concert.status==='partial') sb=`<span class="conflict-badge partial" style="margin-left:6px;font-size:10px;vertical-align:middle">⚡</span>`;
-        front.innerHTML=
-          mkTd(concert.debutStr,'flex:0 0 9%',"font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--red)")+
-          mkTd(concert.finStr,'flex:0 0 9%','font-size:11px;color:var(--muted)')+
-          mkTd(concert.nom+sb,'flex:1',"font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--white)")+
-          mkTd(`<span class="scene-pill ${key}">${sl(concert.scene)}</span>`,'flex:0 0 26%')+
-          mkTd(concert.style||'—','flex:0 0 24%','font-size:12px;color:var(--muted)')+
-          (hasFlip?`<div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);opacity:.4;padding:0 6px;flex-shrink:0">↕</div>`:'');
-        inner.appendChild(front);
-        if(hasFlip){
-          const back=document.createElement('div'); back.className='ro-flip-back';
-          back.style.cssText='border:none;border-left:3px solid rgba(130,90,210,.6);border-radius:0;padding:0;flex-direction:column;justify-content:center;overflow:hidden;';
-          concurrents.forEach((c,ci)=>{
-            const ck=sk(c.scene);
-            const crow=document.createElement('div'); crow.className='ro-tr';
-            if(ci>0) crow.style.borderTop='1px solid rgba(130,90,210,.2)';
-            crow.innerHTML=
-              mkTd(c.debutStr,'flex:0 0 9%',"font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:rgba(150,100,230,.8)")+
-              mkTd(c.finStr,'flex:0 0 9%','font-size:11px;color:rgba(150,100,230,.45)')+
-              mkTd(c.nom,'flex:1',"font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--white)")+
-              mkTd(`<span class="scene-pill ${ck}">${sl(c.scene)}</span>`,'flex:0 0 26%')+
-              mkTd(c.style||'—','flex:0 0 24%','font-size:12px;color:rgba(200,170,255,.5)')+
-              `<div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(150,100,230,.4);padding:0 6px;flex-shrink:0">↕</div>`;
-            back.appendChild(crow);
-          });
-          inner.appendChild(back);
-        }
-        card.appendChild(inner); wrap.appendChild(card);
-      } else {
-        const pause=document.createElement('div'); pause.className='ro-pause-row';
-        pause.innerHTML=
-          `<div class="ro-td" style="flex:0 0 9%;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--red)">${slot.heure}</div>`+
-          `<div class="ro-td" style="flex:1;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Pause · ${slot.artistes.map(a=>a.nom).join(' · ')}</div>`;
-        wrap.appendChild(pause);
-      }
-    });
-    sec.appendChild(wrap);
-
-    // ── Table cachée (PDF) ──────────────────────────────
+    // ── Table accordion (écran + PDF) ──────────────────────────
     const cols=['9%','9%','32%','26%','24%'];
     const headers=['Début','Fin','Artiste','Scène','Style'];
-    const t=document.createElement('table'); t.className='ro-pdf-table';
-    t.innerHTML=`<colgroup>${cols.map(w=>`<col style="width:${w}">`).join('')}</colgroup>`;
+    const tbl=document.createElement('table'); tbl.className='ro-screen-table';
+    tbl.innerHTML=`<colgroup>${cols.map(w=>`<col style="width:${w}">`).join('')}</colgroup>`;
     const hr=document.createElement('tr');
     headers.forEach(txt=>{ const th=document.createElement('th'); th.textContent=txt; hr.appendChild(th); });
-    t.appendChild(hr);
+    tbl.appendChild(hr);
     sorted.forEach(slot=>{
       const concert=enriched.find(i=>i.slotHeure===slot.heure);
       const tr=document.createElement('tr');
       if(concert){
         const key=sk(concert.scene);
-        const cell=(h,cls='')=>{ const td=document.createElement('td'); td.innerHTML=h; if(cls) td.className=cls; return td; };
-        tr.appendChild(cell(`<span class="nowrap">${concert.debutStr}</span>`));
-        tr.appendChild(cell(`<span class="nowrap">${concert.finStr}</span>`));
-        tr.appendChild(cell(concert.nom));
+        const concurrents=getSlotConcurrents(jour,slot.heure,concert.nom);
+        const hasFlip=concurrents.length>0;
+        tr.className='ro-concert-row';
+        const cell=(h)=>{ const td=document.createElement('td'); td.innerHTML=h; return td; };
+        let sb='';
+        if(concert.status==='conflict') sb=`<span class="conflict-badge conflict" style="margin-left:6px;font-size:10px;vertical-align:middle">⚠</span>`;
+        else if(concert.status==='partial') sb=`<span class="conflict-badge partial" style="margin-left:6px;font-size:10px;vertical-align:middle">⚡</span>`;
+        const timeTd=cell(`<span class="nowrap" style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--red)">${concert.debutStr}</span>`);
+        timeTd.style.borderLeft=`3px solid ${scC[key]||'var(--border)'}`;
+        tr.appendChild(timeTd);
+        tr.appendChild(cell(`<span class="nowrap" style="color:var(--muted);font-size:11px">${concert.finStr}</span>`));
+        tr.appendChild(cell(concert.nom+sb+(hasFlip?`<span style="float:right;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);opacity:.45">▼</span>`:'')));
         tr.appendChild(cell(`<span class="scene-pill ${key}">${sl(concert.scene)}</span>`));
-        tr.appendChild(cell(concert.style||'—'));
+        tr.appendChild(cell(`<span style="color:var(--muted);font-size:12px">${concert.style||'—'}</span>`));
+        tbl.appendChild(tr);
+        if(hasFlip){
+          const dr=document.createElement('tr'); dr.className='ro-detail-row';
+          const dtd=document.createElement('td'); dtd.colSpan=5; dtd.style.cssText='padding:0;border:none;border-bottom:1px solid #231f1f;';
+          concurrents.forEach(c=>{
+            const ck=sk(c.scene);
+            const item=document.createElement('div'); item.className='ro-detail-item';
+            item.innerHTML=`<span class="ro-detail-time">${c.debutStr}</span><span class="ro-detail-fin">${c.finStr}</span><span class="ro-detail-name">${c.nom}</span><span class="ro-detail-scene"><span class="scene-pill ${ck}">${sl(c.scene)}</span></span><span class="ro-detail-style">${c.style||'—'}</span>`;
+            dtd.appendChild(item);
+          });
+          dr.appendChild(dtd); tbl.appendChild(dr);
+          tr.style.cursor='pointer';
+          tr.onclick=()=>{ tr.classList.toggle('expanded'); dr.classList.toggle('open'); };
+        }
       } else {
         tr.style.opacity='.4';
         const td=document.createElement('td'); td.colSpan=5;
-        td.style.cssText='border:1px solid #231f1f;padding:6px 10px;font-family:Oswald,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);';
+        td.style.cssText='border:none;border-bottom:1px solid #231f1f;padding:6px 10px;font-family:Oswald,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);';
         td.innerHTML=`<span class="nowrap" style="color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:16px;margin-right:10px;">${slot.heure}</span>Pause`;
-        tr.appendChild(td);
+        tr.appendChild(td); tbl.appendChild(tr);
       }
-      t.appendChild(tr);
     });
-    sec.appendChild(t); container.appendChild(sec);
+    sec.appendChild(tbl); container.appendChild(sec);
   });
 
   // Boutons d'action en bas
