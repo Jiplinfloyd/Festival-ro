@@ -1072,7 +1072,6 @@ function getSlotConcurrents(jour,slotHeure,myNom){
 
 function renderRO(){
   const container=document.getElementById('ro-content'); container.innerHTML='';
-  const sceneColors={dave:'var(--scene-dave)',bruce:'var(--scene-bruce)',massey:'var(--scene-massey)',supo:'var(--scene-supo)'};
   joursChoisis.forEach(jour=>{
     if(!donneesFestival[jour]) return;
     const sec=document.createElement('section'); sec.className='jour-section';
@@ -1090,65 +1089,14 @@ function renderRO(){
       });
       return {...cur,status:(maxOv>0&&bi>=0)?(worst<WATCHABLE?'conflict':'partial'):null};
     });
-    const sorted=[...(donneesFestival[jour]||[])].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
-
-    // ── Cartes flip (écran) ─────────────────────────
-    const wrap=document.createElement('div'); wrap.className='ro-cards-wrap';
-    sorted.forEach(slot=>{
-      const concert=enriched.find(i=>i.slotHeure===slot.heure);
-      if(concert){
-        const key=sk(concert.scene);
-        const concurrents=getSlotConcurrents(jour,slot.heure,concert.nom);
-        const hasFlip=concurrents.length>0;
-        const card=document.createElement('div');
-        card.className='ro-flip-card'+(hasFlip?'':' no-flip');
-        if(hasFlip) card.onclick=()=>card.classList.toggle('flipped');
-        const inner=document.createElement('div'); inner.className='ro-flip-inner';
-        // Front
-        const front=document.createElement('div'); front.className='ro-flip-front';
-        front.style.borderTop=`3px solid ${sceneColors[key]||'var(--border)'}`;
-        let statusBadge='';
-        if(concert.status==='conflict') statusBadge=`<span class="conflict-badge conflict">⚠ Chevauchement</span>`;
-        else if(concert.status==='partial') statusBadge=`<span class="conflict-badge partial">⚡ Partiel</span>`;
-        front.innerHTML=`<div class="ro-card-time">${concert.debutStr} → ${concert.finStr}</div>
-<div class="ro-card-name">${concert.nom}</div>
-<div class="ro-card-meta"><span class="scene-pill ${key}">${sl(concert.scene)}</span>${statusBadge}</div>
-${concert.style?`<div class="ro-card-style">${concert.style}</div>`:''}
-${hasFlip?`<div class="ro-card-flip-hint">↻ voir en face</div>`:''}`;
-        inner.appendChild(front);
-        // Back
-        if(hasFlip){
-          const back=document.createElement('div'); back.className='ro-flip-back';
-          let backHtml=`<div class="ro-back-label">En même temps ↻</div>`;
-          concurrents.forEach(c=>{
-            const ck=sk(c.scene);
-            backHtml+=`<div class="ro-back-artist">
-<div class="ro-back-name">${c.nom}</div>
-<div class="ro-card-meta"><span class="scene-pill ${ck}">${sl(c.scene)}</span></div>
-${c.finStr?`<div class="ro-back-time">${c.debutStr} → ${c.finStr}</div>`:''}
-${c.style?`<div class="ro-back-style">${c.style}</div>`:''}
-</div>`;
-          });
-          backHtml+=`<div class="ro-back-flip-hint">↻ retourner</div>`;
-          back.innerHTML=backHtml; inner.appendChild(back);
-        }
-        card.appendChild(inner); wrap.appendChild(card);
-      } else {
-        const pause=document.createElement('div'); pause.className='ro-pause-item';
-        pause.innerHTML=`<span class="ro-pause-time">${slot.heure}</span><span class="ro-pause-artists">${slot.artistes.map(a=>a.nom).join(' · ')}</span>`;
-        wrap.appendChild(pause);
-      }
-    });
-    sec.appendChild(wrap);
-
-    // ── Table cachée (PDF) ──────────────────────────
     const cols=['9%','9%','32%','26%','24%'];
     const headers=['Début','Fin','Artiste','Scène','Style'];
-    const t=document.createElement('table'); t.className='ro-pdf-table';
+    const t=document.createElement('table');
     t.innerHTML=`<colgroup>${cols.map(w=>`<col style="width:${w}">`).join('')}</colgroup>`;
     const hr=document.createElement('tr');
     headers.forEach(txt=>{ const th=document.createElement('th'); th.textContent=txt; hr.appendChild(th); });
     t.appendChild(hr);
+    const sorted=[...(donneesFestival[jour]||[])].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
     sorted.forEach(slot=>{
       const concert=enriched.find(i=>i.slotHeure===slot.heure);
       const tr=document.createElement('tr');
@@ -1707,12 +1655,15 @@ function renderLive(){
         <div class="live-set-remaining">Il reste ${rem} min</div>
       </div>`;
     if(nowHasFlip){
-      let backHtml=`<div class="ro-back-label">En même temps ↻</div>`;
-      nowConc.forEach(c=>{const ck=sk(c.scene);backHtml+=`<div class="ro-back-artist"><div class="ro-back-name">${c.nom}</div><div class="ro-card-meta"><span class="scene-pill ${ck}">${sl(c.scene)}</span></div>${c.finStr?`<div class="ro-back-time">${c.debutStr} → ${c.finStr}</div>`:''} ${c.style?`<div class="ro-back-style">${c.style}</div>`:''}</div>`;});
-      backHtml+=`<div class="ro-back-flip-hint">↻ retourner</div>`;
+      let backHtml=`<div class="live-now-label" style="color:rgba(150,100,230,.75)">● En même temps <span style="font-size:9px;opacity:.6;margin-left:6px;letter-spacing:1px;">↻ RETOURNER</span></div>`;
+      nowConc.forEach(c=>{
+        const ck=sk(c.scene);
+        backHtml+=`<div class="live-now-artist" style="margin-top:6px">${c.nom}<span class="live-scene-badge ${ck}">${sl(c.scene)}</span></div>
+<div class="live-now-meta" style="color:rgba(200,170,255,.55)">${c.style||''}&nbsp;·&nbsp;${c.debutStr}${c.finStr?' – '+c.finStr:''}</div>`;
+      });
       html+=`<div class="ro-flip-card" onclick="this.classList.toggle('flipped')"><div class="ro-flip-inner">
         <div class="ro-flip-front" style="border:1px solid var(--border);border-top:4px solid var(--red);border-radius:4px;padding:20px 24px 18px;background:var(--surface);box-shadow:0 8px 40px rgba(0,0,0,.5);margin-bottom:0">${frontInner}</div>
-        <div class="ro-flip-back" style="border-radius:4px">${backHtml}</div>
+        <div class="ro-flip-back" style="border-radius:4px;border-top:4px solid rgba(130,90,210,.6);padding:20px 24px 18px">${backHtml}</div>
       </div></div>`;
     } else {
       html+=`<div class="live-now">${frontInner}</div>`;
@@ -1733,13 +1684,18 @@ function renderLive(){
         <div class="next-info"><div class="next-artist">${c.nom}</div><div class="next-meta">${sl(c.scene)}${c.style?' · '+c.style:''}</div></div>
         <div class="next-time">${c.debutStr}</div>`;
       if(nextHasFlip){
-        let nb=`<div class="ro-back-label">En même temps ↻</div>`;
-        nextConc.forEach(nc=>{const nk=sk(nc.scene);nb+=`<div class="ro-back-artist"><div class="ro-back-name">${nc.nom}</div><div class="ro-card-meta"><span class="scene-pill ${nk}">${sl(nc.scene)}</span></div>${nc.finStr?`<div class="ro-back-time">${nc.debutStr} → ${nc.finStr}</div>`:''} ${nc.style?`<div class="ro-back-style">${nc.style}</div>`:''}</div>`;});
-        nb+=`<div class="ro-back-flip-hint">↻ retourner</div>`;
         const sceneC={dave:'var(--scene-dave)',bruce:'var(--scene-bruce)',massey:'var(--scene-massey)',supo:'var(--scene-supo)'}[key]||'var(--border)';
+        let nb='';
+        nextConc.forEach(nc=>{
+          const nk=sk(nc.scene);
+          const nSceneC={dave:'var(--scene-dave)',bruce:'var(--scene-bruce)',massey:'var(--scene-massey)',supo:'var(--scene-supo)'}[nk]||'var(--muted)';
+          nb+=`<div class="next-countdown" style="color:rgba(150,100,230,.85);min-width:58px;text-align:center;flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;">≈<small style="display:block;font-size:10px;color:rgba(150,100,230,.45);letter-spacing:2px;font-family:'Oswald',sans-serif;">même</small></div>
+<div class="next-info" style="flex:1"><div class="next-artist" style="color:var(--white)">${nc.nom}</div><div class="next-meta" style="color:rgba(200,170,255,.55)">${sl(nc.scene)}${nc.style?' · '+nc.style:''}</div></div>
+<div class="next-time" style="color:rgba(150,100,230,.7);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;flex-shrink:0">${nc.debutStr}</div>`;
+        });
         html+=`<div class="ro-flip-card" onclick="this.classList.toggle('flipped')"><div class="ro-flip-inner">
           <div class="ro-flip-front live-next-card ${key}" style="border:none;border-left:3px solid ${sceneC};border-radius:3px;padding:12px 16px;display:flex;align-items:center;gap:16px;background:var(--surface)">${cardInner}</div>
-          <div class="ro-flip-back" style="border-radius:3px">${nb}</div>
+          <div class="ro-flip-back" style="border-radius:3px;border-left:3px solid rgba(130,90,210,.5);padding:12px 16px;display:flex;align-items:center;gap:16px">${nb}</div>
         </div></div>`;
       } else {
         html+=`<div class="live-next-card ${key}">${cardInner}</div>`;
