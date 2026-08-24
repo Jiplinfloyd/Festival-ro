@@ -1461,19 +1461,24 @@ function resetDevTime(){
   renderLive();
 }
 
+function getEffectiveTs(){
+  const now=new Date();
+  const raw=now.getHours()*60+now.getMinutes();
+  const d=raw<ROLLOVER?new Date(now.getFullYear(),now.getMonth(),now.getDate()-1):now;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 function isFestivalPeriod(){
   if(devSimulation) return true;
-  const today=new Date();
-  const ts=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-  return JOURS_ORDRE.some(j=>JOURS_DATES[j]===ts);
+  return JOURS_ORDRE.some(j=>JOURS_DATES[j]===getEffectiveTs());
 }
 
 function getNowContext(){
   if(devSimulation) return devSimulation;
-  const today=new Date();
-  const ts=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-  const raw=today.getHours()*60+today.getMinutes()+today.getSeconds()/60;
+  const now=new Date();
+  const raw=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
   const minutes=raw<ROLLOVER?raw+24*60:raw;
+  const ts=getEffectiveTs();
   for(const j of JOURS_ORDRE){ if(JOURS_DATES[j]===ts) return {jour:j,minutes}; }
   return null;
 }
