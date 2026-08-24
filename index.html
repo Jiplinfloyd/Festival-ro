@@ -287,6 +287,41 @@ tr:hover td{background:var(--surface2);}
 .live-end{text-align:center;padding:48px 20px;font-family:'Oswald',sans-serif;letter-spacing:2px;color:var(--muted);}
 .live-end strong{display:block;font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--text);letter-spacing:4px;margin-bottom:10px;}
 
+/* ── FLIP CARDS ─────────────────────────────────────── */
+.flip-face{backface-visibility:hidden;-webkit-backface-visibility:hidden;}
+.ro-flip-card{perspective:900px;cursor:pointer;user-select:none;}
+.ro-flip-card.no-flip{cursor:default;}
+.ro-flip-inner{position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.ro-flip-card.flipped .ro-flip-inner{transform:rotateY(180deg);}
+.ro-flip-front{position:relative;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3px;border:1px solid var(--border);padding:14px 16px;background:var(--surface);}
+.ro-flip-back{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:rotateY(180deg);
+  background:linear-gradient(135deg,#150e2a 0%,#0e0a1e 100%);
+  border:1px solid rgba(130,90,210,.4);border-radius:3px;
+  padding:14px 16px;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.ro-cards-wrap{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.ro-pdf-table{display:none;}
+body.pdf-mode .ro-pdf-table{display:table!important;}
+body.pdf-mode .ro-cards-wrap{display:none!important;}
+.ro-card-time{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--red);margin-bottom:3px;}
+.ro-card-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,34px);letter-spacing:3px;color:var(--white);line-height:1;margin-bottom:6px;}
+.ro-card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:4px;}
+.ro-card-style{font-family:'Oswald',sans-serif;font-size:12px;color:var(--muted);letter-spacing:.5px;margin-top:3px;}
+.ro-card-flip-hint{margin-top:8px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);opacity:.5;text-align:right;}
+.ro-back-label{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(150,100,230,.8);margin-bottom:10px;}
+.ro-back-artist{margin-bottom:8px;}
+.ro-back-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(20px,3.5vw,30px);letter-spacing:3px;color:var(--white);line-height:1;}
+.ro-back-time{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:rgba(150,100,230,.8);margin-top:2px;}
+.ro-back-style{font-family:'Oswald',sans-serif;font-size:12px;color:rgba(200,170,255,.55);letter-spacing:.5px;margin-top:2px;}
+.ro-back-flip-hint{margin-top:10px;font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(150,100,230,.45);text-align:right;}
+.ro-pause-item{display:flex;align-items:center;gap:12px;padding:5px 8px;opacity:.32;border-left:2px solid var(--border);}
+.ro-pause-time{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--red);min-width:44px;flex-shrink:0;}
+.ro-pause-artists{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
 /* ── ÉCRAN PARTAGE ─────────────────────────────────── */
 .share-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,7vw,68px);letter-spacing:8px;color:var(--white);line-height:1;margin:0 0 4px;text-shadow:0 0 40px var(--red-glow);}
 .share-sub{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
@@ -1024,13 +1059,20 @@ function getChoixJour(jour){
     const debut=a.debut||slot.heure;
     const [sM,eM]=intervalFor(debut,a.fin);
     let sN=sM,eN=eM; if(sN!=null&&sN<ROLLOVER){sN+=24*60;eN+=24*60;}
-    result.push({nom:a.nom,scene:a.scene,style:a.style,debutStr:debut,finStr:toHHmm(eM%(24*60)),start:sN,end:eN});
+    result.push({nom:a.nom,scene:a.scene,style:a.style,debutStr:debut,slotHeure:slot.heure,finStr:toHHmm(eM%(24*60)),start:sN,end:eN});
   });
   return result.sort((a,b)=>a.start-b.start);
 }
 
+function getSlotConcurrents(jour,slotHeure,myNom){
+  const slot=(donneesFestival[jour]||[]).find(s=>s.heure===slotHeure);
+  if(!slot) return [];
+  return slot.artistes.filter(a=>a.nom!==myNom).map(a=>({nom:a.nom,scene:a.scene,style:a.style,debutStr:a.debut||slot.heure,finStr:a.fin||''}));
+}
+
 function renderRO(){
   const container=document.getElementById('ro-content'); container.innerHTML='';
+  const sceneColors={dave:'var(--scene-dave)',bruce:'var(--scene-bruce)',massey:'var(--scene-massey)',supo:'var(--scene-supo)'};
   joursChoisis.forEach(jour=>{
     if(!donneesFestival[jour]) return;
     const sec=document.createElement('section'); sec.className='jour-section';
@@ -1048,22 +1090,69 @@ function renderRO(){
       });
       return {...cur,status:(maxOv>0&&bi>=0)?(worst<WATCHABLE?'conflict':'partial'):null};
     });
+    const sorted=[...(donneesFestival[jour]||[])].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
+
+    // ── Cartes flip (écran) ─────────────────────────
+    const wrap=document.createElement('div'); wrap.className='ro-cards-wrap';
+    sorted.forEach(slot=>{
+      const concert=enriched.find(i=>i.slotHeure===slot.heure);
+      if(concert){
+        const key=sk(concert.scene);
+        const concurrents=getSlotConcurrents(jour,slot.heure,concert.nom);
+        const hasFlip=concurrents.length>0;
+        const card=document.createElement('div');
+        card.className='ro-flip-card'+(hasFlip?'':' no-flip');
+        if(hasFlip) card.onclick=()=>card.classList.toggle('flipped');
+        const inner=document.createElement('div'); inner.className='ro-flip-inner';
+        // Front
+        const front=document.createElement('div'); front.className='ro-flip-front';
+        front.style.borderTop=`3px solid ${sceneColors[key]||'var(--border)'}`;
+        let statusBadge='';
+        if(concert.status==='conflict') statusBadge=`<span class="conflict-badge conflict">⚠ Chevauchement</span>`;
+        else if(concert.status==='partial') statusBadge=`<span class="conflict-badge partial">⚡ Partiel</span>`;
+        front.innerHTML=`<div class="ro-card-time">${concert.debutStr} → ${concert.finStr}</div>
+<div class="ro-card-name">${concert.nom}</div>
+<div class="ro-card-meta"><span class="scene-pill ${key}">${sl(concert.scene)}</span>${statusBadge}</div>
+${concert.style?`<div class="ro-card-style">${concert.style}</div>`:''}
+${hasFlip?`<div class="ro-card-flip-hint">↻ voir en face</div>`:''}`;
+        inner.appendChild(front);
+        // Back
+        if(hasFlip){
+          const back=document.createElement('div'); back.className='ro-flip-back';
+          let backHtml=`<div class="ro-back-label">En même temps ↻</div>`;
+          concurrents.forEach(c=>{
+            const ck=sk(c.scene);
+            backHtml+=`<div class="ro-back-artist">
+<div class="ro-back-name">${c.nom}</div>
+<div class="ro-card-meta"><span class="scene-pill ${ck}">${sl(c.scene)}</span></div>
+${c.finStr?`<div class="ro-back-time">${c.debutStr} → ${c.finStr}</div>`:''}
+${c.style?`<div class="ro-back-style">${c.style}</div>`:''}
+</div>`;
+          });
+          backHtml+=`<div class="ro-back-flip-hint">↻ retourner</div>`;
+          back.innerHTML=backHtml; inner.appendChild(back);
+        }
+        card.appendChild(inner); wrap.appendChild(card);
+      } else {
+        const pause=document.createElement('div'); pause.className='ro-pause-item';
+        pause.innerHTML=`<span class="ro-pause-time">${slot.heure}</span><span class="ro-pause-artists">${slot.artistes.map(a=>a.nom).join(' · ')}</span>`;
+        wrap.appendChild(pause);
+      }
+    });
+    sec.appendChild(wrap);
+
+    // ── Table cachée (PDF) ──────────────────────────
     const cols=['9%','9%','32%','26%','24%'];
     const headers=['Début','Fin','Artiste','Scène','Style'];
-    const t=document.createElement('table');
+    const t=document.createElement('table'); t.className='ro-pdf-table';
     t.innerHTML=`<colgroup>${cols.map(w=>`<col style="width:${w}">`).join('')}</colgroup>`;
     const hr=document.createElement('tr');
     headers.forEach(txt=>{ const th=document.createElement('th'); th.textContent=txt; hr.appendChild(th); });
     t.appendChild(hr);
-
-    // Construire la liste complète slots triés avec pauses intercalées
-    const sorted=[...(donneesFestival[jour]||[])].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
-    let ci=0;
     sorted.forEach(slot=>{
-      const concert=enriched.find(i=>i.debutStr===slot.heure);
+      const concert=enriched.find(i=>i.slotHeure===slot.heure);
       const tr=document.createElement('tr');
       if(concert){
-        ci++;
         const key=sk(concert.scene);
         const cell=(h,cls='')=>{ const td=document.createElement('td'); td.innerHTML=h; if(cls) td.className=cls; return td; };
         tr.appendChild(cell(`<span class="nowrap">${concert.debutStr}</span>`));
@@ -1072,7 +1161,6 @@ function renderRO(){
         tr.appendChild(cell(`<span class="scene-pill ${key}">${sl(concert.scene)}</span>`));
         tr.appendChild(cell(concert.style||'—'));
       } else {
-        // Ligne pause
         tr.style.opacity='.4';
         const td=document.createElement('td'); td.colSpan=5;
         td.style.cssText='border:1px solid #231f1f;padding:6px 10px;font-family:Oswald,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);';
@@ -1081,7 +1169,6 @@ function renderRO(){
       }
       t.appendChild(tr);
     });
-
     sec.appendChild(t); container.appendChild(sec);
   });
 
@@ -1609,16 +1696,27 @@ function renderLive(){
     const pct=Math.min(100,(nowMin-enCours.start)/dur([enCours.start,enCours.end])*100).toFixed(1);
     const rem=Math.ceil(enCours.end-nowMin);
     const key=sk(enCours.scene);
-    html+=`<div class="live-now">
-      <div class="live-now-label"><span class="live-pulse"></span> En ce moment</div>
+    const nowConc=getSlotConcurrents(jour,enCours.slotHeure,enCours.nom);
+    const nowHasFlip=nowConc.length>0;
+    const frontInner=`<div class="live-now-label"><span class="live-pulse"></span> En ce moment${nowHasFlip?' <span style="font-size:9px;opacity:.5;margin-left:6px;letter-spacing:1px;">↻ VOIR EN FACE</span>':''}</div>
       <div class="live-now-artist">${enCours.nom}<span class="live-scene-badge ${key}">${sl(enCours.scene)}</span></div>
       <div class="live-now-meta">${enCours.style||''}&nbsp;·&nbsp;${enCours.debutStr} – ${enCours.finStr}</div>
       <div class="live-set-bar-wrap">
         <div class="live-set-bar-labels"><span>${enCours.debutStr}</span><span>${enCours.finStr}</span></div>
         <div class="live-set-bar-track"><div class="live-set-bar-fill" style="width:${pct}%"></div></div>
         <div class="live-set-remaining">Il reste ${rem} min</div>
-      </div>
-    </div>`;
+      </div>`;
+    if(nowHasFlip){
+      let backHtml=`<div class="ro-back-label">En même temps ↻</div>`;
+      nowConc.forEach(c=>{const ck=sk(c.scene);backHtml+=`<div class="ro-back-artist"><div class="ro-back-name">${c.nom}</div><div class="ro-card-meta"><span class="scene-pill ${ck}">${sl(c.scene)}</span></div>${c.finStr?`<div class="ro-back-time">${c.debutStr} → ${c.finStr}</div>`:''} ${c.style?`<div class="ro-back-style">${c.style}</div>`:''}</div>`;});
+      backHtml+=`<div class="ro-back-flip-hint">↻ retourner</div>`;
+      html+=`<div class="ro-flip-card" onclick="this.classList.toggle('flipped')"><div class="ro-flip-inner">
+        <div class="ro-flip-front" style="border:1px solid var(--border);border-top:4px solid var(--red);border-radius:4px;padding:20px 24px 18px;background:var(--surface);box-shadow:0 8px 40px rgba(0,0,0,.5);margin-bottom:0">${frontInner}</div>
+        <div class="ro-flip-back" style="border-radius:4px">${backHtml}</div>
+      </div></div>`;
+    } else {
+      html+=`<div class="live-now">${frontInner}</div>`;
+    }
   } else {
     const prochain=choix.find(c=>c.start>nowMin);
     if(prochain){ const att=Math.ceil(prochain.start-nowMin); html+=`<div class="live-gap"><strong>Pause</strong>Prochain concert dans ${att} min — ${prochain.nom}</div>`; }
@@ -1628,11 +1726,24 @@ function renderLive(){
     html+=`<div class="live-next-title">À venir</div><div class="live-next-list">`;
     suivants.forEach(c=>{
       const ma=Math.ceil(c.start-nowMin); const key=sk(c.scene);
-      html+=`<div class="live-next-card ${key}">
-        <div class="next-countdown">${ma<60?`${ma}<small>min</small>`:`${Math.floor(ma/60)}h${String(ma%60).padStart(2,'0')}<small>dans</small>`}</div>
+      const countdownHtml=ma<60?`${ma}<small>min</small>`:`${Math.floor(ma/60)}h${String(ma%60).padStart(2,'0')}<small>dans</small>`;
+      const nextConc=getSlotConcurrents(jour,c.slotHeure,c.nom);
+      const nextHasFlip=nextConc.length>0;
+      const cardInner=`<div class="next-countdown">${countdownHtml}</div>
         <div class="next-info"><div class="next-artist">${c.nom}</div><div class="next-meta">${sl(c.scene)}${c.style?' · '+c.style:''}</div></div>
-        <div class="next-time">${c.debutStr}</div>
-      </div>`;
+        <div class="next-time">${c.debutStr}</div>`;
+      if(nextHasFlip){
+        let nb=`<div class="ro-back-label">En même temps ↻</div>`;
+        nextConc.forEach(nc=>{const nk=sk(nc.scene);nb+=`<div class="ro-back-artist"><div class="ro-back-name">${nc.nom}</div><div class="ro-card-meta"><span class="scene-pill ${nk}">${sl(nc.scene)}</span></div>${nc.finStr?`<div class="ro-back-time">${nc.debutStr} → ${nc.finStr}</div>`:''} ${nc.style?`<div class="ro-back-style">${nc.style}</div>`:''}</div>`;});
+        nb+=`<div class="ro-back-flip-hint">↻ retourner</div>`;
+        const sceneC={dave:'var(--scene-dave)',bruce:'var(--scene-bruce)',massey:'var(--scene-massey)',supo:'var(--scene-supo)'}[key]||'var(--border)';
+        html+=`<div class="ro-flip-card" onclick="this.classList.toggle('flipped')"><div class="ro-flip-inner">
+          <div class="ro-flip-front live-next-card ${key}" style="border:none;border-left:3px solid ${sceneC};border-radius:3px;padding:12px 16px;display:flex;align-items:center;gap:16px;background:var(--surface)">${cardInner}</div>
+          <div class="ro-flip-back" style="border-radius:3px">${nb}</div>
+        </div></div>`;
+      } else {
+        html+=`<div class="live-next-card ${key}">${cardInner}</div>`;
+      }
     });
     html+=`</div>`;
   } else if(enCours){
