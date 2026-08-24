@@ -155,11 +155,11 @@ button:active{transform:translateY(1px);}
 .option .ov-note{margin-top:5px;font-size:11px;color:#8a8070;line-height:1.3;}
 .option.partial .ov-note{color:var(--gold);}
 .option.conflict .ov-note{color:#e88;}
-.int-btn{position:absolute;bottom:7px;right:7px;width:18px;height:18px;border-radius:50%;border:1px solid rgba(130,90,210,.35);background:transparent;color:rgba(130,90,210,.55);font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;z-index:2;line-height:1;font-family:'Oswald',sans-serif;}
-.int-btn:hover{border-color:rgba(130,90,210,.8);color:rgba(160,120,240,.9);background:rgba(130,90,210,.12);}
-.int-btn.active{border-color:rgba(160,110,240,.9);color:rgba(190,150,255,1);background:rgba(130,90,210,.22);}
-.option.selected .int-btn,.option:has(input:checked) .int-btn{opacity:0;pointer-events:none;}
-.int-badge{display:inline-block;margin-left:5px;font-size:10px;font-family:'Oswald',sans-serif;background:rgba(130,90,210,.2);color:rgba(180,140,255,.9);border:1px solid rgba(130,90,210,.35);border-radius:10px;padding:1px 5px;vertical-align:middle;letter-spacing:1px;}
+.int-btn{display:inline-flex;align-items:center;margin-top:8px;padding:3px 9px;border-radius:10px;border:1px solid rgba(130,90,210,.25);background:transparent;color:rgba(150,110,230,.45);font-size:10px;letter-spacing:.5px;font-family:'Oswald',sans-serif;cursor:pointer;transition:all .2s;}
+.int-btn:hover{border-color:rgba(130,90,210,.7);color:rgba(160,120,240,.85);background:rgba(130,90,210,.1);}
+.int-btn.active{border-color:rgba(150,100,230,.85);color:#d8b8ff;background:rgba(100,60,190,.35);box-shadow:0 0 10px rgba(130,90,210,.25);}
+.option.selected .int-btn,.option:has(input:checked) .int-btn{visibility:hidden;pointer-events:none;}
+.int-badge{display:inline-block;margin-left:5px;font-size:10px;font-family:'Oswald',sans-serif;background:rgba(130,90,210,.2);color:rgba(180,140,255,.9);border:1px solid rgba(130,90,210,.35);border-radius:10px;padding:1px 6px;vertical-align:middle;letter-spacing:.5px;}
 .validate-row{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid var(--border);}
 
 /* ── STICKY DAY HEADER ─────────────────────────────── */
@@ -953,7 +953,7 @@ function buildChoixUI(){
         opt.dataset.jour=jour; opt.dataset.start=sN??''; opt.dataset.end=eN??'';
         opt.innerHTML=`<input type="radio" name="${gn}" value="${a.nom}"><strong>${a.nom}</strong><small>${a.style?a.style+' &nbsp;·&nbsp; ':''}<span class="scene-tag ${key}">${sl(a.scene)}</span><br><span class="time">${debut}${es?'–'+es:''}</span></small>`;
         opt.appendChild(Object.assign(document.createElement('div'),{className:'ov-note'}));
-        const qb=document.createElement('button'); qb.type='button'; qb.className='int-btn'; qb.textContent='?'; qb.title='Intéressé·e mais je ne pourrai pas y aller';
+        const qb=document.createElement('button'); qb.type='button'; qb.className='int-btn'; qb.textContent='à voir aussi'; qb.title='Intéressé·e mais je ne pourrai pas y aller';
         qb.dataset.j=jour; qb.dataset.h=slot.heure; qb.dataset.n=a.nom;
         if(isInt(jour,slot.heure,a.nom)) qb.classList.add('active');
         qb.onclick=e=>{ e.stopPropagation(); e.preventDefault(); setInt(jour,slot.heure,a.nom,!isInt(jour,slot.heure,a.nom)); qb.classList.toggle('active',isInt(jour,slot.heure,a.nom)); };
@@ -1142,7 +1142,7 @@ function renderRO(){
           concurrents.forEach(c=>{
             const ck=sk(c.scene);
             const item=document.createElement('div'); item.className='ro-detail-item';
-            const qm=isInt(jour,slot.heure,c.nom)?'<span class="int-badge">?</span>':'';
+            const qm=isInt(jour,slot.heure,c.nom)?'<span class="int-badge">à voir aussi</span>':'';
             item.innerHTML=`<span class="ro-detail-time">${c.debutStr}</span><span class="ro-detail-fin">${c.finStr}</span><span class="ro-detail-name">${c.nom}${qm}</span><span class="ro-detail-scene"><span class="scene-pill ${ck}">${sl(c.scene)}</span></span><span class="ro-detail-style">${c.style||'—'}</span>`;
             dtd.appendChild(item);
           });
@@ -1704,7 +1704,7 @@ function renderLive(){
         if(cSN!=null&&cSN<ROLLOVER){cSN+=24*60;if(cEN!=null)cEN+=24*60;}
         const cPct=(cSN!=null&&cEN!=null)?Math.min(100,(nowMin-cSN)/(cEN-cSN)*100).toFixed(1):0;
         const cRem=cEN!=null?Math.ceil(cEN-nowMin):null;
-        const qmN=isInt(jour,enCours.slotHeure,c.nom)?'<span class="int-badge">?</span>':'';
+        const qmN=isInt(jour,enCours.slotHeure,c.nom)?'<span class="int-badge">à voir aussi</span>':'';
         backHtml+=`<div class="live-now-artist" style="margin-top:6px">${c.nom}${qmN}<span class="live-scene-badge ${ck}">${sl(c.scene)}</span></div>
 <div class="live-now-meta" style="color:rgba(200,170,255,.55)">${c.style||''}&nbsp;·&nbsp;${c.debutStr}${c.finStr?' – '+c.finStr:''}</div>
 <div class="live-set-bar-wrap">
@@ -1744,7 +1744,7 @@ function renderLive(){
           if(ncSN!=null&&ncSN<ROLLOVER) ncSN+=24*60;
           const ncMa=ncSN!=null?Math.ceil(ncSN-nowMin):ma;
           const ncCountdown=ncMa<60?`${ncMa}<small>min</small>`:`${Math.floor(ncMa/60)}h${String(ncMa%60).padStart(2,'0')}<small>dans</small>`;
-          const qmV=isInt(jour,c.slotHeure,nc.nom)?'<span class="int-badge">?</span>':'';
+          const qmV=isInt(jour,c.slotHeure,nc.nom)?'<span class="int-badge">à voir aussi</span>':'';
           nb+=`<div class="next-countdown" style="color:rgba(150,100,230,.85);min-width:58px;text-align:center;flex-shrink:0">${ncCountdown}</div>
 <div class="next-info" style="flex:1"><div class="next-artist" style="color:var(--white)">${nc.nom}${qmV}</div><div class="next-meta" style="color:rgba(200,170,255,.55)">${sl(nc.scene)}${nc.style?' · '+nc.style:''}</div></div>
 <div class="next-time" style="color:rgba(150,100,230,.7);flex-shrink:0">${nc.debutStr}</div>`;
