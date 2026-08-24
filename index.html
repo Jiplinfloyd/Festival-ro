@@ -321,6 +321,15 @@ body.pdf-mode .ro-cards-wrap{display:none!important;}
 .ro-pause-item{display:flex;align-items:center;gap:12px;padding:5px 8px;opacity:.32;border-left:2px solid var(--border);}
 .ro-pause-time{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--red);min-width:44px;flex-shrink:0;}
 .ro-pause-artists{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* RO flip-x (axe horizontal) */
+.ro-flip-card.flip-x .ro-flip-back{transform:rotateX(180deg);flex-direction:row;align-items:center;gap:14px;}
+.ro-flip-card.flip-x.flipped .ro-flip-inner{transform:rotateX(180deg);}
+.ro-card-row{display:flex;align-items:center;gap:14px;}
+.ro-col-time{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--red);min-width:88px;flex-shrink:0;line-height:1.1;}
+.ro-col-fin{display:block;font-size:11px;color:var(--muted);font-family:'Oswald',sans-serif;letter-spacing:.5px;margin-top:1px;}
+.ro-col-main{flex:1;min-width:0;}
+.ro-col-name{font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;letter-spacing:1px;color:var(--white);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ro-col-sub{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
 /* ── ÉCRAN PARTAGE ─────────────────────────────────── */
 .share-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,7vw,68px);letter-spacing:8px;color:var(--white);line-height:1;margin:0 0 4px;text-shadow:0 0 40px var(--red-glow);}
@@ -1072,6 +1081,7 @@ function getSlotConcurrents(jour,slotHeure,myNom){
 
 function renderRO(){
   const container=document.getElementById('ro-content'); container.innerHTML='';
+  const scC={dave:'var(--scene-dave)',bruce:'var(--scene-bruce)',massey:'var(--scene-massey)',supo:'var(--scene-supo)'};
   joursChoisis.forEach(jour=>{
     if(!donneesFestival[jour]) return;
     const sec=document.createElement('section'); sec.className='jour-section';
@@ -1089,14 +1099,57 @@ function renderRO(){
       });
       return {...cur,status:(maxOv>0&&bi>=0)?(worst<WATCHABLE?'conflict':'partial'):null};
     });
+    const sorted=[...(donneesFestival[jour]||[])].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
+
+    // ── Cartes flip-x (écran) ──────────────────────────
+    const wrap=document.createElement('div'); wrap.className='ro-cards-wrap';
+    sorted.forEach(slot=>{
+      const concert=enriched.find(i=>i.slotHeure===slot.heure);
+      if(concert){
+        const key=sk(concert.scene);
+        const concurrents=getSlotConcurrents(jour,slot.heure,concert.nom);
+        const hasFlip=concurrents.length>0;
+        const card=document.createElement('div');
+        card.className='ro-flip-card flip-x'+(hasFlip?'':' no-flip');
+        if(hasFlip) card.onclick=()=>card.classList.toggle('flipped');
+        const inner=document.createElement('div'); inner.className='ro-flip-inner';
+        // Front
+        const front=document.createElement('div'); front.className='ro-flip-front ro-card-row';
+        front.style.borderLeft=`3px solid ${scC[key]||'var(--border)'}`;
+        let sb='';
+        if(concert.status==='conflict') sb=`<span class="conflict-badge conflict" style="margin-left:8px;font-size:10px;vertical-align:middle">⚠</span>`;
+        else if(concert.status==='partial') sb=`<span class="conflict-badge partial" style="margin-left:8px;font-size:10px;vertical-align:middle">⚡</span>`;
+        front.innerHTML=`<div class="ro-col-time">${concert.debutStr}<span class="ro-col-fin">→ ${concert.finStr}</span></div>
+<div class="ro-col-main"><div class="ro-col-name">${concert.nom}${sb}</div><div class="ro-col-sub"><span class="scene-pill ${key}">${sl(concert.scene)}</span>&nbsp;·&nbsp;${concert.style||'—'}</div></div>
+${hasFlip?`<div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--muted);opacity:.4;flex-shrink:0">↕</div>`:''}`;
+        inner.appendChild(front);
+        if(hasFlip){
+          concurrents.forEach(c=>{
+            const ck=sk(c.scene);
+            const back=document.createElement('div'); back.className='ro-flip-back';
+            back.innerHTML=`<div class="ro-col-time" style="color:rgba(150,100,230,.8)">${c.debutStr}<span class="ro-col-fin" style="color:rgba(150,100,230,.45)">→ ${c.finStr}</span></div>
+<div class="ro-col-main"><div class="ro-col-name">${c.nom}</div><div class="ro-col-sub" style="color:rgba(200,170,255,.5)"><span class="scene-pill ${ck}">${sl(c.scene)}</span>&nbsp;·&nbsp;${c.style||'—'}</div></div>
+<div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(150,100,230,.4);flex-shrink:0">↕</div>`;
+            inner.appendChild(back);
+          });
+        }
+        card.appendChild(inner); wrap.appendChild(card);
+      } else {
+        const pause=document.createElement('div'); pause.className='ro-pause-item';
+        pause.innerHTML=`<span class="ro-pause-time">${slot.heure}</span><span class="ro-pause-artists">${slot.artistes.map(a=>a.nom).join(' · ')}</span>`;
+        wrap.appendChild(pause);
+      }
+    });
+    sec.appendChild(wrap);
+
+    // ── Table cachée (PDF) ──────────────────────────────
     const cols=['9%','9%','32%','26%','24%'];
     const headers=['Début','Fin','Artiste','Scène','Style'];
-    const t=document.createElement('table');
+    const t=document.createElement('table'); t.className='ro-pdf-table';
     t.innerHTML=`<colgroup>${cols.map(w=>`<col style="width:${w}">`).join('')}</colgroup>`;
     const hr=document.createElement('tr');
     headers.forEach(txt=>{ const th=document.createElement('th'); th.textContent=txt; hr.appendChild(th); });
     t.appendChild(hr);
-    const sorted=[...(donneesFestival[jour]||[])].sort((a,b)=>(norm(toMin(a.heure))??0)-(norm(toMin(b.heure))??0));
     sorted.forEach(slot=>{
       const concert=enriched.find(i=>i.slotHeure===slot.heure);
       const tr=document.createElement('tr');
